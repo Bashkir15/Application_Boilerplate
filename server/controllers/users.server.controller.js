@@ -206,5 +206,26 @@ module.exports = function() {
 		});
 	};
 
+	obj.profile = function (req, res) {
+		User.findOne({name: req.params.name})
+		.populate('following')
+		.exec((err, user) => {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			user.profileViews += 1;
+			user.save((err, item) => {
+				if (err) {
+					return json.bad(err, res);
+				}
+
+				json.good({
+					record: item
+				}, res);
+			});
+		});
+	};
+
 	return obj;
 };

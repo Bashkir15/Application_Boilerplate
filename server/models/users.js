@@ -59,6 +59,11 @@ var UserSchema = new mongoose.Schema({
 		ref: 'User'
 	}],
 
+	profileViews: {
+		type: Number,
+		default: 0
+	},
+
 	activationCode: {
 		type: String
 	},
