@@ -71,6 +71,11 @@ var UserSchema = new mongoose.Schema({
 		type: Number,
 		required: true,
 		default: 0
+	},
+
+	secureLock: {
+		type: Boolean,
+		default: false
 	}
 });
 
@@ -149,18 +154,18 @@ UserSchema.methods = {
 
 		// if they have reached the limit more than once, we will increase the lock time
 
-		if (this.loginAttempts + 1 > 5 && this.limitReached = 1 && !this.isLocked) {
-			updates.$set { lockUntil: Date.now() + 4 * 60 * 60 * 1000, limitReached: 2}
+		if (this.loginAttempts + 1 > 5 && this.limitReached == 1 && !this.isLocked) {
+			updates.$set = { lockUntil: Date.now() + 4 * 60 * 60 * 1000, limitReached: 2}
 		}
 
-		if (this.loginAttempts + 1 > 3 && this.limitReached = 2 && !this.isLocked) {
+		if (this.loginAttempts + 1 > 3 && this.limitReached == 2 && !this.isLocked) {
 			updates.$set = { lockUntil: Date.now() + 8 * 60 * 60 * 1000, limitReached: 3}
 		}
 
 		// If the user reaches the third limit and still fails, their account must be manually unlocked
 
-		if (this.loginAttempts + 1 > 3 && this.limitReached = 3 && !this.isLocked) {
-			updates.$set = { lockUntil: Date.now() + 10000 * 60 * 60 * 1000, limitReached: 4}
+		if (this.loginAttempts + 1 > 3 && this.limitReached == 3 && !this.isLocked) {
+			updates.$set = { lockUntil: Date.now() + 10000 * 60 * 60 * 1000, limitReached: 4, secureLock: true}
 		}
 
 		return this.update(updates, callback);
