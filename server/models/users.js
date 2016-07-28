@@ -51,6 +51,10 @@ var UserSchema = new mongoose.Schema({
 	provider: {
 		type: String,
 		default: 'local'
+	},
+
+	activationCode: {
+		type: String
 	}
 });
 
@@ -72,6 +76,7 @@ UserSchema.pre('save', function(next) {
 			}
 
 			user.password = hash;
+			user.activationCode = Date.now().toString().substr(4, 4) + Date.now().toString().substr(6, 4) + Date.now().toString();
 			next();
 		});
 	});

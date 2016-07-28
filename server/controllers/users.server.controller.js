@@ -16,7 +16,7 @@ module.exports = function() {
 		 	the Admin
 		**/
 
-		User.count({}, function (err, len) {
+		User.count({}, (err, len) => {
 			if (len) {
 				roles.push('admin');
 			}
@@ -25,7 +25,7 @@ module.exports = function() {
 			var token = jwt.sign(user, global.config.secret, { expiresInMinutes: 180});
 			user.provider = 'local';
 			user.roles = roles;
-			user.save(function (err, user) {
+			user.save((err, user) => {
 				if (err) {
 					return json.bad(err, res);
 				}
