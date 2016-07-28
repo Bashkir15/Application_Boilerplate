@@ -12,5 +12,12 @@
 			controller: 'SignupController',
 			controllerAs: 'vm'
 		});
+
+		$stateProvider.state('login', {
+			url: '/login',
+			templateUrl: '/angular/authentication/login/login.html',
+			controller: 'LoginController',
+			controllerAs: 'vm'
+		});
 	}
 }());

@@ -1,0 +1,37 @@
+<div class='auth-page-container'>
+	<div>
+		<div class='auth-page-card'>
+			<div class='auth-page-header'>
+				<h3>Welcome Back!</h3>
+			</div>
+
+			<div class='auth-page-body'>
+				<form name='vm.loginForm' ng-submit='vm.login(vm.loginForm.$valid)' novalidate>
+					<div class='auth-form-wrapper'>
+						<label>Email</label>
+						<input type='email' name='email' ng-model='vm.user.email' required>
+					</div>
+
+					<div class='auth-form-wrapper'>
+						<label>Password</label>
+						<input type='password' name='password' ng-model='vm.user.password' required>
+					</div>
+
+					<div class='auth-form-submit'>
+						<button type='submit' aria-label='login form submit'>
+							<span>Login</span>
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<div class='auth-page-footer'>
+				<p>Don't have an account yet? <a ui-sref='signup'>Signup Here</a></p>
+
+				<div class='decorator'></div>
+
+				<div class='auth-page-social'></div>
+			</div>
+		</div>
+	</div>
+</div>
