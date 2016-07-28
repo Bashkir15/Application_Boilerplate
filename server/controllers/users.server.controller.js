@@ -114,7 +114,7 @@ module.exports = function() {
 	};
 
 	obj.single = function (req, res) {
-		User.findOne({_id: req.params.userId})
+		User.findOne({name: req.params.name})
 		.populate('following')
 		.exec(function (err, user) {
 			if (err) {
@@ -146,6 +146,62 @@ module.exports = function() {
 				});
 			} else {
 				return json.bad({message: 'Sorry, that user could not be found'}, res);
+			}
+		});
+	};
+
+	obj.follow = function (req, res) {
+		var currentUser = req.user;
+		var toFollow = req.params.name;
+
+		User.findOne({name: req.params.name})
+		.populate('following')
+		.exec(function (err, user) {
+			if (err) {
+				return json.bad(err, res);
+			} else {
+				if (currentUser.following.indexOf(user._id) !== -1) {
+					return json.bad({message: 'Sorry, you are already following that user'}, res);
+				}
+
+				currentUser.following.push(user._id);
+				currentUser.save((err, item) => {
+					if (err) {
+						return json.bad(err, res);
+					}
+
+					json.good({
+						record: item
+					}, res);
+				});
+			}
+		});
+	};
+
+	obj.unfollow = function (req, res) {
+		var currentUser = req.user;
+		var toUnfollow = req.params.name;
+
+		User.findOne({name: req.params.name})
+		.populate('following')
+		.exec((err, user) => {
+			if (err) {
+				return json.bad(err, res);
+			} else {
+				if (currentUser.following.indexOf(user._id) !== -1) {
+					currentUser.following.splice(currentUser.indexOf(user._id), 1);
+					currentUser.save((err, item) => {
+						if (err) {
+							return json.bad(err, res);
+						}
+
+						json.good({
+							record: item
+						}, res);
+					});
+				} else {
+					return json.bad({message: 'Sorry, you are not following that user'}, res);
+				}
 			}
 		});
 	};

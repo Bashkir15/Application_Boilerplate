@@ -6,6 +6,8 @@ var users = require('../controllers/users.server.controller')();
 
 router.post('/', users.create);
 router.post('/authenticate', users.authenticate);
-router.get('/:userId', auth.justGetUser, users.single);
+router.get('/:name', auth.justGetUser, users.single);
+router.post('/:name/follow', auth.ensureAuthorized, users.follow);
+router.post('/:name/unfollow', auth.ensureAuthorized, users.unfollow);
 
 module.exports = router;
