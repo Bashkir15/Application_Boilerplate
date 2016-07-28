@@ -18,8 +18,9 @@ module.exports = function (db) {
 	app.use(bodyParser.urlencoded({extended: true}));
 	app.use(morgan('dev'));
 	app.use(compression());
-	app.use(express.static(path.join(__dirname, 'public')));
-	app.use(express.static(path.join(__dirname, 'dist')));
+	app.use(express.static(path.join(__dirname, '../public')));
+	app.use(express.static(path.join(__dirname, '../node_modules')))
+	app.use(express.static(path.join(__dirname, '../dist')));
 	app.use(function (req, res, next) {
 		res.setHeader('Access-Control-Allow-Origin', '*');
 		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');

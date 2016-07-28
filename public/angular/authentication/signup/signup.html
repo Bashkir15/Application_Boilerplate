@@ -1,0 +1,49 @@
+<div class='auth-page-container'>
+	<div>
+		<div class='auth-page-card'>
+			<div class='auth-page-header'>
+				<h3>Signup</h3>
+			</div>
+
+			<div class='auth-page-body'>
+				<form name='vm.signupForm' ng-submit="vm.signup(vm.signupForm.$valid)" novalidate>
+					<div class='auth-form-wrapper'>
+						<label>Name</label>
+						<input type='text' name='name' ng-model='vm.user.name' required>
+					</div>
+
+					<div class='auth-form-wrapper'>
+						<label>Username</label>
+						<input type='text' name='username' ng-model='vm.user.username' required>
+					</div>
+
+					<div class='auth-form-wrapper'>
+						<label>Email</label>
+						<input type='email' name='email' ng-model='vm.user.email' required>
+					</div>
+
+					<div class='auth-form-wrapper'>
+						<label>Password</label>
+						<input type='password' name='password' ng-model='vm.user.password' required>
+					</div>
+
+					<div class='auth-form-wrapper'>
+						<label>Confirm Password</label>
+						<input type='password' name='confirm' ng-model='vm.user.confirm' requried>
+					</div>
+
+					<div class='auth-form-submit'>
+						<button type='submit' aria-label='submit signup form'>
+							<span>Signup</span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+		<div class='auth-page-footer'>
+			<p>Already have an account? <a ui-sref='login'>Login Here</a></p>
+		</div>
+	</div>
+</div>

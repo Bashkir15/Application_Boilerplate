@@ -382,8 +382,8 @@ module.exports = function() {
 	};
 
 	obj.recent = function (req, res) {
-		User.find({}).sort('created': -1).limit(20)
-		.exec((err, users) {
+		User.find({}).sort({'created': -1}).limit(20)
+		.exec((err, users) => {
 			if (err) {
 				return json.bad(err, res);
 			}
@@ -395,7 +395,7 @@ module.exports = function() {
 	};
 
 	obj.destroy = function (req, res) {
-		User.findOne({username: req.params.username}, (err, user) {
+		User.findOne({username: req.params.username}, (err, user) => {
 			if (err) {
 				return json.bad(err, res);
 			}
