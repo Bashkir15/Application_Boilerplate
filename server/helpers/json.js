@@ -6,7 +6,7 @@ module.exports = {
 		});
 	},
 
-	bad: function (obj, err) {
+	bad: function (err, res) {
 		var obj = {
 			success: 0,
 			res: err

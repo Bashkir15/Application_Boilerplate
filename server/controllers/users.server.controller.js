@@ -39,7 +39,7 @@ module.exports = function() {
 	};
 
 	obj.authenticate = function (req, res) {
-		User.findOne({_email: req.body.email}, function (err, user) {
+		User.findOne({email: req.body.email}, function (err, user) {
 			if (err) {
 				return json.bad(err, res);
 			}
@@ -50,7 +50,7 @@ module.exports = function() {
 						return json.bad(err, res);
 					}
 
-					json.bad({message: 'Sorry, you have reached the maximum number of login attempts and your account is locked until ' + user.lockUntil.toString()}, res);
+					json.bad({message: 'Sorry, you have reached the maximum number of login attempts and your account is locked until ' + user.lockUntil}, res);
 				});
 			}
 

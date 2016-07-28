@@ -103,7 +103,7 @@ UserSchema.pre('save', function(next) {
 	});
 });
 
-UserSchema.virtual('isLocked').get(() => {
+UserSchema.virtual('isLocked').get(function() {
 	// check for a lockUntil timestamp
 
 	return !!(this.lockUntil && this.lockUntil > Date.now());
