@@ -227,5 +227,43 @@ module.exports = function() {
 		});
 	};
 
+	obj.search = function (req, res) {
+		var keyword = req.params.keyword;
+		var criteria = {};
+
+		if (req.query.onlyUsernames) {
+			criteria = {
+				username: new RegExp(keyword, 'ig')
+			};
+		} else {
+			criteria = {
+				$or: [
+
+					{
+						name: new RegExp(keyword, 'ig')
+					},
+
+					{
+						username: new RegExp(keyword, 'ig')
+					}
+				]
+			};
+		}
+
+		// Don't let the user search for themselves
+
+		criteria._id = { $ne: req.user._id};
+
+		User.find(criteria, null).exec((err, items) => {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			json.good({
+				items: items
+			}, res);
+		});
+	};
+
 	return obj;
 };

@@ -10,5 +10,5 @@ router.get('/:name', auth.justGetUser, users.single);
 router.post('/:name/follow', auth.ensureAuthorized, users.follow);
 router.post('/:name/unfollow', auth.ensureAuthorized, users.unfollow);
 router.get('/:name/profile', auth.justGetUser, users.profile);
-
+router.get('/search/:keyword', auth.justGetUser, users.search);
 module.exports = router;
