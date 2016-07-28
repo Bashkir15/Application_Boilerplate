@@ -7,6 +7,8 @@ import http from 'http';
  *
  */
 
+import Users from './server/models/users';
+
 var configFile = require('./server/config/' + (process.env.NODE_ENV || 'development'));
 
 global.config = configFile;
@@ -20,6 +22,6 @@ var server = http.createServer(app);
 
 global.server = server;
 
-global.server.listen(global.config.server.port, () => {
+app.listen(global.config.server.port, () => {
 	console.log('The application has connected to ' + global.config.server.host + global.config.server.port + ' and the environment is currently set to ' + (process.env.NODE_ENV || 'development'));
 });
