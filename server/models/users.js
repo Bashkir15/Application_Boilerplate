@@ -64,6 +64,16 @@ var UserSchema = new mongoose.Schema({
 		default: 0
 	},
 
+	socketId: {
+		type: String,
+		default: ''
+	},
+
+	loggedIn: {
+		type: Boolean,
+		default: false
+	},
+
 	activationCode: {
 		type: String
 	},

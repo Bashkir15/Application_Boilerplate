@@ -35,6 +35,8 @@ module.exports = function() {
 					return json.bad(err, res);
 				}
 
+
+
 				json.good({
 					record: user,
 					token: token
@@ -75,10 +77,11 @@ module.exports = function() {
 					//if there is no lock or failed attempts, just return the user
 
 					if (!user.loginAttempts && !user.lockUntil && !user.secureLock) {
-						return json.good({
-							record: user,
-							token: user.token
-						}, res);
+						
+							return json.good({
+								record: user,
+								token: token
+							}, res);
 					}
 
 					var updates = {
@@ -374,6 +377,19 @@ module.exports = function() {
 
 			json.good({
 				record: user
+			}, res);
+		});
+	};
+
+	obj.recent = function (req, res) {
+		User.find({}).sort('created': -1).limit(20)
+		.exec((err, users) {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			json.good({
+				records: users
 			}, res);
 		});
 	};

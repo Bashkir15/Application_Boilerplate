@@ -22,6 +22,6 @@ var server = http.createServer(app);
 
 global.server = server;
 
-app.listen(global.config.server.port, () => {
+global.server.listen(global.config.server.port, () => {
 	console.log('The application has connected to ' + global.config.server.host + global.config.server.port + ' and the environment is currently set to ' + (process.env.NODE_ENV || 'development'));
 });
