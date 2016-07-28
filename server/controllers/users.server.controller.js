@@ -22,7 +22,7 @@ module.exports = function() {
 			}
 
 			var user = new User(req.body);
-			var token = jwt.sign(user, global.config.secret, { expiresInMinutes: 180});
+			var token = jwt.sign(user, global.config.secret, { expiresIn: 10800});
 			user.provider = 'local';
 			user.roles = roles;
 			user.save((err, user) => {
@@ -66,7 +66,7 @@ module.exports = function() {
 				}
 
 				if (isMatch) {
-					var token = jwt.sign(user, global.config.secret, { expiresInMinutes: 180 });
+					var token = jwt.sign(user, global.config.secret, { expiresInMinutes: 10800 });
 					//if there is no lock or failed attempts, just return the user
 
 					if (!user.loginAttempts && !user.lockUntil && !user.secureLock) {
