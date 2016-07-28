@@ -55,6 +55,22 @@ var UserSchema = new mongoose.Schema({
 
 	activationCode: {
 		type: String
+	},
+
+	loginAttempts: {
+		type: Number,
+		required: true,
+		default: 0
+	},
+
+	lockUntil: {
+		type: Number
+	},
+
+	limitReached: {
+		type: Number,
+		required: true,
+		default: 0
 	}
 });
 
@@ -82,6 +98,12 @@ UserSchema.pre('save', function(next) {
 	});
 });
 
+UserSchema.virtual('isLocked').get(() => {
+	// check for a lockUntil timestamp
+
+	return !!(this.lockUntil && this.lockUntil > Date.now());
+});
+
 UserSchema.methods = {
 	hasRole: function(role) {
 		var roles = this.roles;
@@ -101,6 +123,47 @@ UserSchema.methods = {
 
 			callback(null, isMatch);
 		});
+	},
+
+	incorrectLoginAttempts: function (callback) {
+		// If there has been a previous lock that has since expired, reset to 1
+
+		if (this.lockUntil && this.lockUntil < Date.now()) {
+			return this.update({
+				$set: { loginAttempts: 1, limitReached: 0 },
+				$unset: { lockUntil: 1 }
+			}, callback);
+		}
+
+		// Otherwise, we will increment the login attempts
+
+		var updates = {
+			$inc: { loginAttempts: 1 }
+		};
+
+		// then we will lock the account if the limit has been reached if it is not locked already
+
+		if (this.loginAttempts + 1 > 5 && !this.isLocked) {
+			updates.$set = { lockUntil: Date.now() + 2 * 60 * 60 * 1000, limitReached: 1}
+		}
+
+		// if they have reached the limit more than once, we will increase the lock time
+
+		if (this.loginAttempts + 1 > 5 && this.limitReached = 1 && !this.isLocked) {
+			updates.$set { lockUntil: Date.now() + 4 * 60 * 60 * 1000, limitReached: 2}
+		}
+
+		if (this.loginAttempts + 1 > 3 && this.limitReached = 2 && !this.isLocked) {
+			updates.$set = { lockUntil: Date.now() + 8 * 60 * 60 * 1000, limitReached: 3}
+		}
+
+		// If the user reaches the third limit and still fails, their account must be manually unlocked
+
+		if (this.loginAttempts + 1 > 3 && this.limitReached = 3 && !this.isLocked) {
+			updates.$set = { lockUntil: Date.now() + 10000 * 60 * 60 * 1000, limitReached: 4}
+		}
+
+		return this.update(updates, callback);
 	}
 };
 
