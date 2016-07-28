@@ -122,7 +122,7 @@ module.exports = function() {
 	};
 
 	obj.single = function (req, res) {
-		User.findOne({name: req.params.name})
+		User.findOne({username: req.params.username})
 		.populate('following')
 		.exec(function (err, user) {
 			if (err) {
@@ -162,7 +162,7 @@ module.exports = function() {
 		var currentUser = req.user;
 		var toFollow = req.params.name;
 
-		User.findOne({name: req.params.name})
+		User.findOne({username: req.params.username})
 		.populate('following')
 		.exec(function (err, user) {
 			if (err) {
@@ -190,7 +190,7 @@ module.exports = function() {
 		var currentUser = req.user;
 		var toUnfollow = req.params.name;
 
-		User.findOne({name: req.params.name})
+		User.findOne({username: req.params.username})
 		.populate('following')
 		.exec((err, user) => {
 			if (err) {
@@ -215,7 +215,7 @@ module.exports = function() {
 	};
 
 	obj.profile = function (req, res) {
-		User.findOne({name: req.params.name})
+		User.findOne({username: req.params.username})
 		.populate('following')
 		.exec((err, user) => {
 			if (err) {
@@ -391,6 +391,26 @@ module.exports = function() {
 			json.good({
 				records: users
 			}, res);
+		});
+	};
+
+	obj.destroy = function (req, res) {
+		User.findOne({username: req.params.username}, (err, user) {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			if (!req.user.isAdmin) {
+				res.sendStatus(403);
+			}
+
+			user.remove((err) => {
+				if (err) {
+					return json.bad(err, res);
+				}
+
+				json.good({}, res);
+			});
 		});
 	};
 

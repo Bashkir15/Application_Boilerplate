@@ -127,6 +127,20 @@ UserSchema.pre('save', function(next) {
 	});
 });
 
+UserSchema.pre('remove', function (next) {
+	this.model('User').find({following: this._id}, (err, docs) => {
+		if (err) {
+			return next(err);
+		}
+
+		for (var doc in docs) {
+			docs[doc].remove();
+		}
+	});
+
+	next();
+});
+
 UserSchema.virtual('isLocked').get(function() {
 	// check for a lockUntil timestamp
 

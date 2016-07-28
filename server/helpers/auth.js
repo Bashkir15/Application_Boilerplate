@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 module.exports = {
 	ensureAuthorized: function (req, res, next) {
 		var mongoose = require('mongoose');
