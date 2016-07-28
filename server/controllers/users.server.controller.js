@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import json from '../helpers/json';
+import crypto from 'crypto';
+import async from 'async';
+import nodemailer from 'nodemailer';
+import mailer from '../helpers/mailer';
+
 var User = mongoose.model('User');
 
 module.exports = function() {
@@ -261,6 +266,114 @@ module.exports = function() {
 
 			json.good({
 				items: items
+			}, res);
+		});
+	};
+
+	obj.forgot = function (req, res) {
+		async.waterfall([
+			function (done) {
+				crypto.randomBytes(20, (err, buff) => {
+					var token = buf.toString('hex');
+					done(err, token);
+				});
+			},
+
+			function (token, done) {
+				User.findOne({email: req.body.email}, (err, user) => {
+					if (!user) {
+						return json.bad({message: 'Sorry, there is no user with that email'}, res);
+					}
+
+					user.resetPasswordToken = token;
+					user.resetPasswordExpires = Date.now() + 3600000;
+
+					user.save((err) => {
+						done(err, token, user);
+					});
+				});
+			},
+
+			function (token, user, done) {
+				var mailTransport = mailer.transport;
+				var mailOptions = {
+					to: user.email,
+					from: 'authentication.boilerplate@gmail.com',
+					subject: 'You account password reset',
+					text: 'You are receiving this because you (or someone else) has requested to reset your password. Please click on \n\n' +
+					'Please click on the following link or paste it into your browser to complete the process \n\n' + 
+					'http://' + global.config.host + global.config.port + '/reset/' + token + '\n\n' + 
+					'if you did not send this, ignore and your password will remain unchanged'
+				};
+
+				mailTransport.sendMail(mailOptions, (err) => {
+					done(err, 'done');
+				});
+			}
+		], function (err) {
+			var success = true;
+
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			json.good({
+				record: success
+			}, res);
+		});
+	};
+
+	obj.processReset = function (req, res) {
+		async.waterfall([
+			function (done) {
+				User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now()}}, function (err, user) {
+					if (err) {
+						return json.bad(err, res);
+					}
+
+					if (!user) {
+						return json.bad({message: 'The password reset token is invalid or has expired, please try again'}, res);
+					}
+
+					user.password = req.body.password;
+					user.resetPasswordToken = undefined;
+					user.resetPasswordExpires = undefined;
+
+					user.save((err) => {
+						var token = jwt.sign(user, global.config.secret, { expiresIn: 10800});
+
+						if (err) {
+							return json.bad(err, res);
+						}
+
+						json.good({
+							record: user,
+							token: token
+						}, res);
+					});
+				});
+			},
+
+			function (user, done) {
+				var mailTransport = mailer.transport;
+				var mailOptions = {
+					to: user.email,
+					from: 'authenticaton.boilerplate@gmail.com',
+					subject: 'Your password has been changed',
+					text: 'This is a confirmation to let you know that the password for your account with the email ' + user.email + ' has just been changed'
+				};
+
+				mailTransport.sendMail(mailTransport, (err) => {
+					done(err);
+				});
+			}
+		], function (err) {
+			if (err) {
+				return json.bad(err);
+			}
+
+			json.good({
+				record: user
 			}, res);
 		});
 	};

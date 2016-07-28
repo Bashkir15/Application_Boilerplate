@@ -87,7 +87,10 @@ var UserSchema = new mongoose.Schema({
 	secureLock: {
 		type: Boolean,
 		default: false
-	}
+	},
+
+	resetPasswordToken: String,
+	resetPasswordExpires: Date
 });
 
 UserSchema.pre('save', function(next) {
