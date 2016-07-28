@@ -53,6 +53,12 @@ var UserSchema = new mongoose.Schema({
 		default: 'local'
 	},
 
+	following: [{
+		type: mongoose.Schema.ObjectId,
+		requried: true,
+		ref: 'User'
+	}],
+
 	activationCode: {
 		type: String
 	},
@@ -169,6 +175,13 @@ UserSchema.methods = {
 		}
 
 		return this.update(updates, callback);
+	},
+
+	toJSON: function() {
+		var obj = this.toObject();
+		delete obj.password;
+		delete obj.activationCode;
+		delete obj.following;
 	}
 };
 

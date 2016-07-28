@@ -113,5 +113,42 @@ module.exports = function() {
 		});
 	};
 
+	obj.single = function (req, res) {
+		User.findOne({_id: req.params.userId})
+		.populate('following')
+		.exec(function (err, user) {
+			if (err) {
+				return json.bad(err, res);
+			} else if (user) {
+				var alreadyFollowing;
+
+				// check if the user requesting this is following the user being requested
+
+				var isInArray = req.user.following.some((follow) => {
+					return follow.equals(user._id);
+				});
+
+				if (isInArray) {
+					alreadyFollowing = true;
+				} else {
+					alreadyFollowing = false;
+				}
+
+				user.save(function (err, item) {
+					if (err) {
+						return json.bad(err, res);
+					}
+
+					json.good({
+						record: item,
+						alreadyFollowing: alreadyFollowing
+					}, res);
+				});
+			} else {
+				return json.bad({message: 'Sorry, that user could not be found'}, res);
+			}
+		});
+	};
+
 	return obj;
 };
