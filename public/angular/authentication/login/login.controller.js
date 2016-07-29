@@ -5,7 +5,7 @@
 	.controller('LoginController', LoginController);
 
 	/* @ngInject */
-	function LoginController ($state, $rootScope, appStorage, appUsers) {
+	function LoginController ($state, $rootScope, appStorage, appUsers, appToast) {
 		var vm = this;
 		vm.login = login;
 		vm.postLogin = postLogin;
@@ -23,14 +23,14 @@
 
 				auth.$save(function (response) {
 					if (response.success) {
-						alert('yay!');
+						appToast.success('Welcome back, ' + response.res.record.name);
 						postLogin(response.res.record, response.res.token);
 					} else {
-						alert(response.res.message);
+						appToast.error(response.res.message);
 					}
 				});
 			} else {
-				alert('oh no!');
+				appToast.error('Hmm... Something seems to be missing');
 			}
 		}
 

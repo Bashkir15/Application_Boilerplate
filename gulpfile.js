@@ -2,12 +2,15 @@
 var gulp = require('gulp');
 var plumber = require('gulp-plumber');
 var sass = require('gulp-sass');
+var babel = require('gulp-babel');
 var mincss = require('gulp-uglifycss');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglifyJs = require('gulp-uglify');
 var filesort = require('gulp-angular-filesort');
 var annotate = require('gulp-ng-annotate');
+
+var core = require('babel-core');
 
 
 var config = {
@@ -46,6 +49,10 @@ gulp.task('angular', function() {
 	.pipe(filesort())
 	.pipe(annotate())
 	.pipe(concat('app.js'))
+	.pipe(babel({
+		presets: ['es2015']
+		}
+	))
 	.pipe(uglifyJs())
 	.pipe(rename(
 		function (path) {

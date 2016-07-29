@@ -6,7 +6,7 @@
 
 	/* @ngInject */
 	function appToast ($mdToast) {
-		var service {
+		var service = {
 			success: success,
 			error: error
 		}

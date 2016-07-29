@@ -5,7 +5,7 @@
 	.controller('SignupController', SignupController);
 
 	/* @ngInject */
-	function SignupController ($state, $rootScope, appStorage, appUsers) {
+	function SignupController ($state, $rootScope, appStorage, appUsers, appToast) {
 
 		var vm = this;
 
@@ -35,16 +35,16 @@
 
 				user.$save(function (response) {
 					if (response.success) {
-						alert('yay!');
+						appToast.success('Welcome! ' + response.res.record.name);
 						postSignup(response.res.record, response.res.token);
 					} else {
-						alert(response.res.message);
+						appToast.error(response.res.message);
 					}
-				});
+				})();
 
 			} else {
 
-				alert('oh no!');
+				appToast.error('Hmm... Something seems to be missing');
 			}
 		}
 
@@ -58,4 +58,4 @@
 			$rootScope.$broadcast('loggedIn');
 		}
 	}
-}());
+})();

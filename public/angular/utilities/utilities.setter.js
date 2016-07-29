@@ -7,5 +7,6 @@
 		'ngAria',
 		'ngAnimate',
 		'ngMessages',
-		'ngResource'])
+		'ngResource',
+		'ngMaterial'])
 }());
