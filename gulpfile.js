@@ -49,10 +49,10 @@ gulp.task('angular', function() {
 	.pipe(filesort())
 	.pipe(annotate())
 	.pipe(concat('app.js'))
-	.pipe(babel({
+	/*.pipe(babel({
 		presets: ['es2015']
 		}
-	))
+	))*/
 	.pipe(uglifyJs())
 	.pipe(rename(
 		function (path) {

@@ -9,7 +9,7 @@
 		var service = {
 			getUser: getUser,
 			getToken: getToken,
-			isLoggedIn: isLoggedIn
+			isLoggedIn: isLoggedIn,
 		};
 
 		return service;

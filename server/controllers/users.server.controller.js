@@ -21,16 +21,16 @@ module.exports = function() {
 		 	the Admin
 		**/
 
-		User.count({}, (err, len) => {
-			if (len) {
+		User.count({}, function (err, len) {
+			if (!len) {
 				roles.push('admin');
 			}
 
 			var user = new User(req.body);
-			var token = jwt.sign(user, global.config.secret, { expiresIn: 10800});
+			user.token = jwt.sign(user, global.config.secret, {expiresIn: 10800});
 			user.provider = 'local';
 			user.roles = roles;
-			user.save((err, user) => {
+			user.save(function (err) {
 				if (err) {
 					return json.bad(err, res);
 				}
@@ -39,7 +39,7 @@ module.exports = function() {
 
 				json.good({
 					record: user,
-					token: token
+					token: user.token
 				}, res);
 			});
 		});
@@ -73,14 +73,13 @@ module.exports = function() {
 				}
 
 				if (isMatch) {
-					var token = jwt.sign(user, global.config.secret, { expiresInMinutes: 10800 });
 					//if there is no lock or failed attempts, just return the user
 
 					if (!user.loginAttempts && !user.lockUntil && !user.secureLock) {
-						
+							
 							return json.good({
 								record: user,
-								token: token
+								token: user.token
 							}, res);
 					}
 
@@ -89,14 +88,14 @@ module.exports = function() {
 						$unset: { lockUntil: 1}
 					};
 
-					return user.update(updates, (err) => {
+					return user.update(updates, (err, item) => {
 						if (err) {
 							return json.bad(err, res);
 						}
 
 						json.good({
 							record: user,
-							token: token
+							token: user.token
 						}, res);
 					});
 				}
@@ -413,6 +412,7 @@ module.exports = function() {
 			});
 		});
 	};
+
 
 	return obj;
 };

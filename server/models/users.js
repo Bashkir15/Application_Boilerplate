@@ -99,9 +99,15 @@ var UserSchema = new mongoose.Schema({
 		default: false
 	},
 
+	token: {
+		type: String
+	},
+
 	resetPasswordToken: String,
 	resetPasswordExpires: Date
 });
+
+UserSchema.set('toJSON', {getters: true, virtuals: false});
 
 UserSchema.pre('save', function(next) {
 	var user = this;
@@ -214,6 +220,8 @@ UserSchema.methods = {
 		delete obj.password;
 		delete obj.activationCode;
 		delete obj.following;
+
+		return obj;
 	}
 };
 

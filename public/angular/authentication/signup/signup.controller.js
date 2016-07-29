@@ -5,7 +5,7 @@
 	.controller('SignupController', SignupController);
 
 	/* @ngInject */
-	function SignupController ($state, $rootScope, appStorage, appUsers, appToast) {
+	function SignupController ($state, $rootScope, appStorage, appUsers, appToast, appAuth) {
 
 		var vm = this;
 
@@ -35,12 +35,12 @@
 
 				user.$save(function (response) {
 					if (response.success) {
-						appToast.success('Welcome! ' + response.res.record.name);
+						appToast.success('Welcome, ' + response.res.record.name);
 						postSignup(response.res.record, response.res.token);
 					} else {
 						appToast.error(response.res.message);
 					}
-				})();
+				});
 
 			} else {
 
@@ -49,10 +49,8 @@
 		}
 
 		function postSignup (user, token) {
-
-			var serializedUser = angular.toJson(user);
-
-			appStorage.set('user', serializedUser);
+			var serialized = angular.toJson(user);
+			appStorage.set('user', serialized);
 			appStorage.set('boilerToken', token);
 
 			$rootScope.$broadcast('loggedIn');
