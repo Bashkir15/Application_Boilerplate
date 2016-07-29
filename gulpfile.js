@@ -15,7 +15,8 @@ var config = {
 		mainAngular: './public/angular/app.js',
 		angular: './public/angular/**/*.js',
 		mainSass: './public/static/stylesheets/sass/main.sass',
-		sass: './public/static/stylesheets/sass/**/*.sass'
+		sass: './public/static/stylesheets/sass/**/*.sass',
+		sass2: './public/static/stylesheets/sass/**/**/.sass'
 	},
 
 	prod: {
@@ -55,12 +56,16 @@ gulp.task('angular', function() {
 
 });
 
+gulp.task('watch', function() {
+	gulp.watch([config.dev.mainSass, config.dev.sass, config.dev.sass2], ['sass'])
+	gulp.watch([config.dev.angular, config.dev.mainAngular], ['angular']);
+	}
+);
+
 gulp.task('build:angular', function() {
 
 	gulp.start('angular');
 	gulp.start('sass');
 	gulp.watch([config.dev.angular, config.dev.mainAngular], ['angular']);
-	gulp.watch([config.dev.sass, config.dev.mainSass, ['sass']]);
-
 	}
 );
