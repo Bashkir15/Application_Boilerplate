@@ -7,7 +7,7 @@
 	height: 65px
 	padding: 0
 	z-index: 50
-	border-bottom: 1px solid rgba(0,0,0,0.12)
+	border-bottom: 1px solid #536e8c
 
 .nav-left
 	display: flex
@@ -59,19 +59,27 @@
 	padding: 10px
 
 	button
-		height: 33px
+		height: 38px
 		width: 100px
 		border: none
 		background: none
 		margin-right: 10px
-		border: 1px solid rgba(0,0,0,0.35)
 		border-radius: 3px
+		border: 1px solid #536e8c
+		transition: all .6s ease
 
 		span
 			@include lato
 			font-weight: 300
 			font-size: 18px
-			color: rgba(0,0,0,0.35)
+			color: #bebec0
+			transition: all .6s ease
+
+		&:hover
+			background: #3fc9e1
+
+			span
+				color: #fff
 
 .nav-user-button
 	button

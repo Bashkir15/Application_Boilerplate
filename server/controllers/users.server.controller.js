@@ -8,8 +8,59 @@ import mailer from '../helpers/mailer';
 
 var User = mongoose.model('User');
 
+
+
+/**
+
+	~~  Contents  ~~
+
+
+	Authentication Methods: {
+		obj.create = User Creation,
+		obj.authentication = Login User,
+		obj.forgot = Send User Reset Token,
+		obj.processReset = Reset User Password
+	}
+
+	User Actions: {
+		obj.single = Return A Single User,
+		obj.follow = Follow A User,
+		obj.unfollow = Unfollow A User,
+		obj.profile = View Profile & Increment profileViews
+	}
+
+	User Utilities: {
+		obj.search = Keyword Search For Users,
+		obj.recent = Last 20 Users Created
+	}
+
+	Admin Methods: {
+		obj.destroy = Delete A User Permenantly
+	}
+	
+	
+   *
+**/
+
+
 module.exports = function() {
 	var obj = {};
+
+/*********************************************************************************************
+
+									Authentication Methods
+
+**********************************************************************************************
+
+
+
+	/**
+	  *
+	   Create a new User
+	  *
+	**/
+
+
 
 	obj.create = function (req, res) {
 		var roles = ['authenticated'];
@@ -44,6 +95,18 @@ module.exports = function() {
 			});
 		});
 	};
+
+
+
+
+	/**
+	  *
+	  	Login in an existing User
+	  *
+	 **/
+
+
+
 
 	obj.authenticate = function (req, res) {
 		User.findOne({email: req.body.email}, function (err, user) {
@@ -120,157 +183,17 @@ module.exports = function() {
 		});
 	};
 
-	obj.single = function (req, res) {
-		User.findOne({username: req.params.username})
-		.populate('following')
-		.exec(function (err, user) {
-			if (err) {
-				return json.bad(err, res);
-			} else if (user) {
-				var alreadyFollowing;
 
-				// check if the user requesting this is following the user being requested
 
-				var isInArray = req.user.following.some((follow) => {
-					return follow.equals(user._id);
-				});
 
-				if (isInArray) {
-					alreadyFollowing = true;
-				} else {
-					alreadyFollowing = false;
-				}
+	/**
+	  *
+	  	Send the user an email with a resetToken to reset their password
+	  *
+	**/
 
-				user.save(function (err, item) {
-					if (err) {
-						return json.bad(err, res);
-					}
 
-					json.good({
-						record: item,
-						alreadyFollowing: alreadyFollowing
-					}, res);
-				});
-			} else {
-				return json.bad({message: 'Sorry, that user could not be found'}, res);
-			}
-		});
-	};
 
-	obj.follow = function (req, res) {
-		var currentUser = req.user;
-		var toFollow = req.params.name;
-
-		User.findOne({username: req.params.username})
-		.populate('following')
-		.exec(function (err, user) {
-			if (err) {
-				return json.bad(err, res);
-			} else {
-				if (currentUser.following.indexOf(user._id) !== -1) {
-					return json.bad({message: 'Sorry, you are already following that user'}, res);
-				}
-
-				currentUser.following.push(user._id);
-				currentUser.save((err, item) => {
-					if (err) {
-						return json.bad(err, res);
-					}
-
-					json.good({
-						record: item
-					}, res);
-				});
-			}
-		});
-	};
-
-	obj.unfollow = function (req, res) {
-		var currentUser = req.user;
-		var toUnfollow = req.params.name;
-
-		User.findOne({username: req.params.username})
-		.populate('following')
-		.exec((err, user) => {
-			if (err) {
-				return json.bad(err, res);
-			} else {
-				if (currentUser.following.indexOf(user._id) !== -1) {
-					currentUser.following.splice(currentUser.indexOf(user._id), 1);
-					currentUser.save((err, item) => {
-						if (err) {
-							return json.bad(err, res);
-						}
-
-						json.good({
-							record: item
-						}, res);
-					});
-				} else {
-					return json.bad({message: 'Sorry, you are not following that user'}, res);
-				}
-			}
-		});
-	};
-
-	obj.profile = function (req, res) {
-		User.findOne({username: req.params.username})
-		.populate('following')
-		.exec((err, user) => {
-			if (err) {
-				return json.bad(err, res);
-			}
-
-			user.profileViews += 1;
-			user.save((err, item) => {
-				if (err) {
-					return json.bad(err, res);
-				}
-
-				json.good({
-					record: item
-				}, res);
-			});
-		});
-	};
-
-	obj.search = function (req, res) {
-		var keyword = req.params.keyword;
-		var criteria = {};
-
-		if (req.query.onlyUsernames) {
-			criteria = {
-				username: new RegExp(keyword, 'ig')
-			};
-		} else {
-			criteria = {
-				$or: [
-
-					{
-						name: new RegExp(keyword, 'ig')
-					},
-
-					{
-						username: new RegExp(keyword, 'ig')
-					}
-				]
-			};
-		}
-
-		// Don't let the user search for themselves
-
-		criteria._id = { $ne: req.user._id};
-
-		User.find(criteria, null).exec((err, items) => {
-			if (err) {
-				return json.bad(err, res);
-			}
-
-			json.good({
-				items: items
-			}, res);
-		});
-	};
 
 	obj.forgot = function (req, res) {
 		async.waterfall([
@@ -324,6 +247,18 @@ module.exports = function() {
 			}, res);
 		});
 	};
+
+
+
+
+	/**
+	  *
+	  	If the user sends back the correct resetToken, allow them to reset their password and then confirm by email
+	  *
+	**/
+
+
+
 
 	obj.processReset = function (req, res) {
 		async.waterfall([
@@ -380,6 +315,258 @@ module.exports = function() {
 		});
 	};
 
+
+
+
+
+
+
+/*********************************************************************************************
+
+									User Actions
+
+**********************************************************************************************
+
+
+
+
+	/**
+	  *
+	  	Find a single user by their username
+	  *
+	 **/
+
+
+
+
+	obj.single = function (req, res) {
+		User.findOne({username: req.params.username})
+		.populate('following')
+		.exec(function (err, user) {
+			if (err) {
+				return json.bad(err, res);
+			} else if (user) {
+				var alreadyFollowing;
+
+				// check if the user requesting this is following the user being requested
+
+				var isInArray = req.user.following.some((follow) => {
+					return follow.equals(user._id);
+				});
+
+				if (isInArray) {
+					alreadyFollowing = true;
+				} else {
+					alreadyFollowing = false;
+				}
+
+				user.save(function (err, item) {
+					if (err) {
+						return json.bad(err, res);
+					}
+
+					json.good({
+						record: item,
+						alreadyFollowing: alreadyFollowing
+					}, res);
+				});
+			} else {
+				return json.bad({message: 'Sorry, that user could not be found'}, res);
+			}
+		});
+	};
+
+
+
+
+	/**
+	  *
+	  	Find a user by their username and follow them if you are not already
+	  *
+	**/
+
+
+
+
+	obj.follow = function (req, res) {
+		var currentUser = req.user;
+		var toFollow = req.params.name;
+
+		User.findOne({username: req.params.username})
+		.populate('following')
+		.exec(function (err, user) {
+			if (err) {
+				return json.bad(err, res);
+			} else {
+				if (currentUser.following.indexOf(user._id) !== -1) {
+					return json.bad({message: 'Sorry, you are already following that user'}, res);
+				}
+
+				currentUser.following.push(user._id);
+				currentUser.save((err, item) => {
+					if (err) {
+						return json.bad(err, res);
+					}
+
+					json.good({
+						record: item
+					}, res);
+				});
+			}
+		});
+	};
+
+
+
+
+	/**
+	  *
+	  	Find a user by their username and unfollow them if you are not already
+	  *
+	**/
+
+
+
+
+
+	obj.unfollow = function (req, res) {
+		var currentUser = req.user;
+		var toUnfollow = req.params.name;
+
+		User.findOne({username: req.params.username})
+		.populate('following')
+		.exec((err, user) => {
+			if (err) {
+				return json.bad(err, res);
+			} else {
+				if (currentUser.following.indexOf(user._id) !== -1) {
+					currentUser.following.splice(currentUser.indexOf(user._id), 1);
+					currentUser.save((err, item) => {
+						if (err) {
+							return json.bad(err, res);
+						}
+
+						json.good({
+							record: item
+						}, res);
+					});
+				} else {
+					return json.bad({message: 'Sorry, you are not following that user'}, res);
+				}
+			}
+		});
+	};
+
+
+
+
+	/**
+	  *
+	  	Find a user by their usernames and return their profile. This method is different from the .single method because
+	  	it will properly count profileViews instead of incrementing them everytime the single method gets called regardless
+	  	of whether it is a profile of not
+	  *
+	**/
+
+
+
+
+	obj.profile = function (req, res) {
+		User.findOne({username: req.params.username})
+		.populate('following')
+		.exec((err, user) => {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			user.profileViews += 1;
+			user.save((err, item) => {
+				if (err) {
+					return json.bad(err, res);
+				}
+
+				json.good({
+					record: item
+				}, res);
+			});
+		});
+	};
+
+
+
+
+/*********************************************************************************************
+
+									User Utilities 
+
+*********************************************************************************************/
+
+
+
+
+	/**
+	  *
+	  	Take a keyword and search (global and case-insensitive) for either only usernames matching 
+	  	the keyword or either usernames or names matching the keyword and responds with those users
+	  *
+	**/
+
+
+
+
+
+	obj.search = function (req, res) {
+		var keyword = req.params.keyword;
+		var criteria = {};
+
+		if (req.query.onlyUsernames) {
+			criteria = {
+				username: new RegExp(keyword, 'ig')
+			};
+		} else {
+			criteria = {
+				$or: [
+
+					{
+						name: new RegExp(keyword, 'ig')
+					},
+
+					{
+						username: new RegExp(keyword, 'ig')
+					}
+				]
+			};
+		}
+
+		// Don't let the user search for themselves
+
+		criteria._id = { $ne: req.user._id};
+
+		User.find(criteria, null).exec((err, items) => {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			json.good({
+				items: items
+			}, res);
+		});
+	};
+
+
+
+
+
+	/**
+	  *
+	  	Searches the entire user collection and returns the last 20 users created.
+	  *
+	**/
+
+
+
+	
+
 	obj.recent = function (req, res) {
 		User.find({}).sort({'created': -1}).limit(20)
 		.exec((err, users) => {
@@ -392,6 +579,30 @@ module.exports = function() {
 			}, res);
 		});
 	};
+
+
+
+
+
+/*********************************************************************************************
+
+									Admin Methods 
+
+*********************************************************************************************/
+
+
+
+
+	
+	/**
+	  *
+	  	Find one user by their username and delete them permenantly
+	  *
+	**/
+
+
+
+
 
 	obj.destroy = function (req, res) {
 		User.findOne({username: req.params.username}, (err, user) => {
@@ -415,4 +626,5 @@ module.exports = function() {
 
 
 	return obj;
+
 };
