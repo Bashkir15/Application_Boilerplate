@@ -12,6 +12,11 @@
 	height: 60px
 	margin-bottom: 20px
 
+	h3
+		@include lato
+		font-weight: 300
+		letter-spacing: 2px
+
 
 .auth-form-wrapper
 	position: relative
@@ -22,15 +27,22 @@
 	label
 		display: inline-block
 		position: absolute
-		top: 8px
+		top: 6px
 		left: 6px
 		color: rgba(0,0,0,0.35)
+		@include merry
+		font-weight 300
 
 	input
 		position: relative
 		width: 100%
 		height: 30px
 		padding: 0
+		padding-left: 6px
+		@include merry
+		font-weight: 400
+		font-size: 18px
+		color: rgba(0,0,0,0.35)
 		border: 1px solid rgba(0,0,0,0.35)
 		background: none
 
@@ -40,14 +52,73 @@
 	align-items: center
 	justify-content: center
 	height: 70px
+	padding-bottom: 20px
 
 	button
 		height: 40px
 		width: 140px
 		border: 1px solid rgba(0,0,0,0.35)
+		background: none
+
+		span
+			@include lato
+			font-weight: 300
+			font-size: 18px
+			color: rgba(0,0,0,0.35)
 
 .auth-page-footer
 	display: flex
 	flex-direction: column
 	align-items: center
 	padding-top: 18px
+
+	p
+		@include lato
+		font-weight: 400
+		letter-spacing: 1px
+		color: rgba(0,0,0,0.4)
+
+		a
+			text-decoration: none
+			@include merry
+			font-weight: 300
+			color: rgba(0,0,0,0.35)
+
+.auth-page-social
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
+
+	p
+		@include lato
+		font-weight: 300
+		letter-spacing: 1px
+		color: rgba(0,0,0,0.35)
+
+	> div
+		display: flex
+		flex-direction: row
+		align-items: stretch
+		justify-content: center
+
+.auth-page-social-button
+	display: inline-flex
+	align-items: center
+	justify-content: center
+	height: 55px
+	width: 55px
+	margin-right: 8px
+	border: 1px solid rgba(0,0,0,0.35)
+	border-radius: 50%
+
+	button
+		height: 45px
+		width: 45px
+		border: 1px solid rgba(0,0,0,0.12)
+		border-radius: 50%
+
+	&:last-child
+		margin-right: 0
+
+@import "login"

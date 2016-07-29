@@ -4,7 +4,10 @@
 	align-items: stretch
 	justify-content: stretch
 	position: relative
+	height: 50px
+	padding: 0
 	z-index: 50
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.35)
 
 .nav-left
 	display: flex
@@ -16,6 +19,13 @@
 	display: flex
 	align-items: center
 	justify-content: center
+
+	h3
+		@include merry
+		font-weight: 300
+		font-size: 18px
+		letter-spacing: 2px
+		color: rgba(0,0,0,0.35)
 
 .nav-right
 	display: flex
@@ -29,10 +39,38 @@
 	justify-content: center
 	padding: 10px
 
+	button
+		height: 50px
+		border: none
+		background: none
+
+		span
+			@include lato
+			font-weight: 300
+			font-size: 18px
+			color: rgba(0,0,0,0.35)
+
+
+
 .nav-button
 	display: flex
 	align-items: center
 	justify-content: center
 	padding: 10px
+
+	button
+		height: 33px
+		width: 100px
+		border: none
+		background: none
+		margin-right: 10px
+		border: 1px solid rgba(0,0,0,0.35)
+		border-radius: 3px
+
+		span
+			@include lato
+			font-weight: 300
+			font-size: 18px
+			color: rgba(0,0,0,0.35)
 
 @import "./authentication/authentication"
