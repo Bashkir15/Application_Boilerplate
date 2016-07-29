@@ -7,7 +7,7 @@
 	/* @ngInject */
 	function settingsConfig ($stateProvider) {
 		$stateProvider.state('setting', {
-			url: '/settings/:name'
+			url: '/settings/:name',
 			templateUrl: '/angular/settings/create/settings.html',
 			controller: 'SettingsController',
 			controllerAs: 'vm'

@@ -8,8 +8,8 @@
 		<link rel='stylesheet' href='/stylesheets/main.min.css'>
 	</head>
 
-	<body>
-		<nav class='nav'>
+	<body ng-controller="AppController as vm">
+		<nav class='nav' ng-class="settings.theme">
 			<div class='nav-left'>
 				<div class='nav-item'>
 					<button>
@@ -25,16 +25,20 @@
 			</div>
 
 			<div class='nav-right'>
-				<div class='nav-button'>
+				<div class='nav-button' ng-if="!isLoggedIn">
 					<button ui-sref='signup'>
 						<span>Signup</span>
 					</button>
 				</div>
 
-				<div class='nav-button'>
+				<div class='nav-button' ng-if='!isLoggedIn'>
 					<button ui-sref='login'>
 						<span>Login</span>
 					</button>
+				</div>
+
+				<div class='nav-button nav-user-button' ng-if="isLoggedIn">
+					<button></button>
 				</div>
 			</div>
 		</nav>

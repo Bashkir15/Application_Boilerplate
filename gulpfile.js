@@ -16,6 +16,7 @@ var core = require('babel-core');
 var config = {
 	dev: {
 		mainAngular: './public/angular/app.js',
+		mainAngularController: './public/angular/app.controller.js',
 		angular: './public/angular/**/*.js',
 		mainSass: './public/static/stylesheets/sass/main.sass',
 		sass: './public/static/stylesheets/sass/**/*.sass',
