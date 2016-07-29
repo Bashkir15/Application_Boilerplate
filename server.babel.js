@@ -8,6 +8,7 @@ import http from 'http';
  */
 
 import Users from './server/models/users';
+import Settings from './server/models/settings';
 
 var configFile = require('./server/config/' + (process.env.NODE_ENV || 'development'));
 

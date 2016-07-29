@@ -44,4 +44,6 @@ SettingsSchema.methods = {
 
 		return obj;
 	}
-}
+};
+
+mongoose.model('Setting', SettingsSchema);

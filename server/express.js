@@ -7,6 +7,7 @@ import path from 'path';
 
 import indexRoutes from './routes/index.server.routes';
 import userRoutes from './routes/users.server.routes';
+import settingRoutes from './routes/settings.server.routes';
 
 module.exports = function (db) {
 	var app = express();
@@ -30,6 +31,7 @@ module.exports = function (db) {
 
 	app.use('/', indexRoutes);
 	app.use('/users', userRoutes);
+	app.use('/settings', settingRoutes);
 
 	return app;
 };
