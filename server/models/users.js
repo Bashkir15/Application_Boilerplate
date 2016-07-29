@@ -10,6 +10,18 @@ const escapeProperty = function (value) {
 	return _.escape(value);
 }
 
+
+
+
+/**
+  *
+  	Create the Model for Users
+  *
+**/
+
+
+
+
 var UserSchema = new mongoose.Schema({
 	created: {
 		type: Date,
@@ -107,7 +119,30 @@ var UserSchema = new mongoose.Schema({
 	resetPasswordExpires: Date
 });
 
-UserSchema.set('toJSON', {getters: true, virtuals: false});
+
+
+
+/*********************************************************************************************
+
+									Serial Middlewear
+
+**********************************************************************************************/
+
+
+
+
+
+/**
+  *
+  	Looks for any changes to a User's password and then hashes the users 
+  	password as well as generating an activationCode for the user
+  *
+**/
+
+
+
+
+
 
 UserSchema.pre('save', function(next) {
 	var user = this;
@@ -133,6 +168,21 @@ UserSchema.pre('save', function(next) {
 	});
 });
 
+
+
+
+
+/**
+  *
+  	Before a User is permenantly deleted, it finds the users following them and 
+  	removes this user from their following array
+  *
+**/
+
+
+
+
+
 UserSchema.pre('remove', function (next) {
 	this.model('User').find({following: this._id}, (err, docs) => {
 		if (err) {
@@ -147,21 +197,85 @@ UserSchema.pre('remove', function (next) {
 	next();
 });
 
+
+
+
+
+/*********************************************************************************************
+
+									Model Configuration
+
+**********************************************************************************************/
+
+
+
+
+
+UserSchema.set('toJSON', {getters: true, virtuals: true});
+
+
+
 UserSchema.virtual('isLocked').get(function() {
 	// check for a lockUntil timestamp
 
 	return !!(this.lockUntil && this.lockUntil > Date.now());
 });
 
+
+
+
+/*********************************************************************************************
+
+									Model Methods
+
+**********************************************************************************************/
+
+
+
 UserSchema.methods = {
+
+    /**
+      *
+      	Checks to see if a user has a certain role
+      *
+    **/
+
+
+
+
 	hasRole: function(role) {
 		var roles = this.roles;
 		roles.indexOf('admin') !== -1 || roles.indexOf(role) !== -1;
 	},
 
+
+
+	/**
+	  *
+	  	Checks to see if a user in an admin
+	  *
+	**/
+
+
+
+
+
 	isAdmin: function() {
 		return this.roles.indexOf('admin') !== -1;
 	},
+
+
+
+
+	/**
+	  *
+	  	Compares an incoming user password against the password that is stored for that user
+	  *
+	**/
+
+
+
+
 
 	comparePassword: function (candidatePassword, callback) {
 		var user = this;
@@ -173,6 +287,24 @@ UserSchema.methods = {
 			callback(null, isMatch);
 		});
 	},
+
+
+
+
+	/**
+	  *
+	  	Prevents rate-limiting for User login attempts by locking the account after
+	  	a certain number of incorrect attempts. This number decreases the more times
+	  	an account becomes locked without a successful authentication. After a User
+	  	has failed to log into their account 16 consecutive times, their account
+	  	will be locked indefinitedly for their security and the user will be 
+	  	contacted
+	  *
+	**/
+
+
+
+
 
 	incorrectLoginAttempts: function (callback) {
 		// If there has been a previous lock that has since expired, reset to 1
@@ -215,6 +347,20 @@ UserSchema.methods = {
 		return this.update(updates, callback);
 	},
 
+
+
+
+
+	/**
+	  *
+		Removes security sensitive parameters from the response objects that are sent
+	  *
+	**/
+
+
+
+
+
 	toJSON: function() {
 		var obj = this.toObject();
 		delete obj.password;
@@ -225,4 +371,9 @@ UserSchema.methods = {
 	}
 };
 
+
+
+
+
 mongoose.model("User", UserSchema);
+
