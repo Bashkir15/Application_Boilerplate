@@ -53,8 +53,8 @@
 		<md-sidenav md-component-id='left' class='user-menu-left md-whiteframe-z2'>
 			<div class='user-menu-left-header'>
 				<div></div>
-				<p>{{vm.user.name}}</p>
-				<p>{{vm.user.email}}</p>
+				<p>{{user.name}}</p>
+				<p>{{user.email}}</p>
 			</div>
 
 			<div class='user-menu-left-body'>
@@ -67,6 +67,24 @@
 						<button class='md-secondary'>
 							<i class='mdi mdi-arrow-down'></i>
 						</button>
+					</md-list-item>
+
+					<md-list-item md-ink-ripple>
+						<i class='mdi mdi-account'></i>
+						<div class='inset'>
+							Messages
+						</div>
+
+						<button class='md-secondary'>
+							<i class='mdi mdi-arrow-down'></i>
+						</button>
+					</md-list-item>
+
+					<md-list-item md-ink-ripple ui-sref="setting">
+						<i class='mdi mdi-account'></i>
+						<div class='inset'>
+							Settings
+						</div>
 					</md-list-item>
 
 					<md-list-item md-ink-ripple ui-sref='auth.logout'>

@@ -7,7 +7,7 @@ var users = require('../controllers/users.server.controller')();
 router.post('/', users.create);
 router.post('/authenticate', users.authenticate);
 router.get('/recent', users.recent);
-router.get('/forgot', users.forgot);
+router.post('/forgot', users.forgot);
 router.post('/forgot/:token', users.processReset);
 router.get('/:username', auth.justGetUser, users.single);
 router.post('/:username/follow', auth.ensureAuthorized, users.follow);

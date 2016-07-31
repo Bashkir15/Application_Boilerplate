@@ -6,7 +6,7 @@ module.exports = {
 	},
 	secret: 'adfiuhwefkjahsdfwfdf',
 	mailer: {
-		service: 'GMail',
+		service: 'Gmail',
 		auth: {
 			user: 'Forest.Collins.Portfolio@gmail.com',
 			pass: 'Bashkir1693'

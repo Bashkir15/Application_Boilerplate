@@ -5,9 +5,10 @@
 	.controller('LoginController', LoginController);
 
 	/* @ngInject */
-	function LoginController ($state, $rootScope, $timeout, appStorage, appUsers, appToast) {
+	function LoginController ($state, $rootScope, $timeout, $mdDialog, appStorage, appUsers, appToast) {
 		var vm = this;
 		vm.checkRemember = checkRemember;
+		vm.openPasswordReset = openPasswordReset;
 		vm.login = login;
 		vm.postLogin = postLogin;
 		vm.user = {
@@ -24,6 +25,16 @@
 			} else {
 				vm.user.email = '';
 			}
+		}
+
+		function openPasswordReset() {
+			$mdDialog.show({
+				controller: 'PasswordResetController',
+				controllerAs: 'vm',
+				templateUrl: '/angular/authentication/reset/password.reset.html'
+			}).finally(function() {
+
+			});
 		}
 
 		function login (isValid) {

@@ -197,8 +197,98 @@ module.exports = function() {
 
 	obj.forgot = function (req, res) {
 		async.waterfall([
+				function (done) {
+					crypto.randomBytes(20, (err, buf) => {
+						var token = buf.toString('hex');
+						done(err, token);
+					});
+				},
+
+				function (token, done) {
+					User.findOne({email: req.body.email}, (err, user) => {
+						if (!user) {
+							return json.bad({message: 'Sorry, there is no user with that email'}, res);
+						}
+
+						user.resetPasswordToken = token;
+						user.resetPasswordExpires = Date.now() + 3600000;
+
+						user.save((err) => {
+							done(err, token, user);
+						});
+					});
+				},
+
+				function (token, user, done) {
+					var mailTransport = nodemailer.createTransport({
+						service: global.config.mailer.service,
+						auth: {
+							user: global.config.mailer.auth.user,
+							pass: global.config.mailer.auth.pass
+						}
+					});
+
+					var mailOptions = {
+						to: user.email,
+						from: global.config.mailer.user,
+						subject: 'Your password reset',
+						text: user.resetPasswordToken
+					};
+
+					mailTransport.sendMail(mailOptions, (err, info) => {
+						done(err, 'done');
+					});
+				}
+			], function (err) {
+				var success = true;
+
+				if (err) {
+					return json.bad(err, res);
+				}
+
+				json.good({
+					record: success
+				}, res);
+			}
+		);
+		/*User.findOne({email: req.body.email}, (err, user) => {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			if (!user) {
+				return json.bad({message: 'Sorry, there is no user with that email'}, res);
+			}
+
+
+			var mailTransport = nodemailer.createTransport({
+				service: global.config.mailer.service,
+				auth: {
+					user: global.config.mailer.auth.user,
+					pass: global.config.mailer.auth.pass
+				}
+			});
+
+			var mailOptions = {
+				to: user.email,
+				from: global.config.mailer.user,
+				subject: 'Your password reset',
+				text:  user.activationCode
+			};
+
+			mailTransport.sendMail(mailOptions, (error, info) => {
+				if (err) {
+					return json.bad(err, res);
+				}
+
+				json.good({
+					record: user
+				}, res);
+			});
+		});
+		async.waterfall([
 			function (done) {
-				crypto.randomBytes(20, (err, buff) => {
+				crypto.randomBytes(20, (err, buf) => {
 					var token = buf.toString('hex');
 					done(err, token);
 				});
@@ -245,7 +335,7 @@ module.exports = function() {
 			json.good({
 				record: success
 			}, res);
-		});
+		}); */
 	};
 
 
