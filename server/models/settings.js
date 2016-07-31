@@ -16,9 +16,7 @@ var SettingsSchema = new mongoose.Schema({
 		default: Date.now
 	},
 
-	name: String,
-
-	value: String,
+	theme: String,
 
 	creator: {
 		type: mongoose.Schema.ObjectId,

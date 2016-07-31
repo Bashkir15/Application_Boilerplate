@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 module.exports = {
 	ensureAuthorized: function (req, res, next) {
 		var mongoose = require('mongoose');
-		//var User = mongoose.model('User');
+		var User = mongoose.model('User');
 		var bearerToken;
 		var bearerHeader = req.headers["authorization"];
 
@@ -12,21 +12,25 @@ module.exports = {
 			bearerToken = bearer[1];
 			req.token = bearerToken;
 
-			jwt.verify(req.token, global.config.secret, (err, payload) => {
-				if (err) {
-					return next(err);
+			User.findOne({token: req.token})
+			.populate('following')
+			.exec((err, user) => {
+				if (err || !user) {
+					return res.sendStatus(403);
 				}
 
-				req.user = payload;
+				req.user = user;
 				next();
 			});
+
 		} else {
-			return res.json(403, 'Sorry, you need to be logged in');
+			return res.sendStatus(403);
 		}		
 	},
 
 	justGetUser: function (req, res, next) {
 		var mongoose = require('mongoose');
+		var User = mongoose.model("User");
 		var bearerToken;
 		var bearerHeader = req.headers["authorization"];
 
@@ -35,12 +39,13 @@ module.exports = {
 			bearerToken = bearer[1];
 			req.token = bearerToken;
 
-			jwt.verify(req.token, global.config.secret, (err, payload) => {
-				if (err) {
-					return next(err);
+			User.findOne({token: req.token})
+			.populate('following')
+			.exec((err, user) => {
+				if (user) {
+					req.user = user;
 				}
 
-				req.user = payload;
 				next();
 			});
 		}

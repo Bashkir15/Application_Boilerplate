@@ -78,7 +78,7 @@ module.exports = function() {
 			}
 
 			var user = new User(req.body);
-			user.token = jwt.sign(user, global.config.secret, {expiresIn: 10800});
+			user.token = jwt.sign(user, global.config.secret);
 			user.provider = 'local';
 			user.roles = roles;
 			user.save(function (err) {
@@ -139,11 +139,11 @@ module.exports = function() {
 					//if there is no lock or failed attempts, just return the user
 
 					if (!user.loginAttempts && !user.lockUntil && !user.secureLock) {
-							
-							return json.good({
-								record: user,
-								token: user.token
-							}, res);
+
+						return json.good({
+							record: user,
+							token: user.token
+						}, res);
 					}
 
 					var updates = {

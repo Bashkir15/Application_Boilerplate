@@ -10,63 +10,56 @@ module.exports = function() {
 
 	obj.get = function (req, res) {
 		if (req.user) {
-			Settings.find({creator: req.user._id})
+			Setting.findOne({creator: req.user._id})
 			.lean()
-			.exec((err, items) {
+			.exec((err, item) => {
 				var hasNoSettings;
 
 				if (err) {
 					return json.bad(err, res);
 				}
 
-				if (!items.length) {
+				if (!item) {
 					return json.good({
 						hasNoSettings: hasNoSettings
 					}, res);
 				}
 
 				json.good({
-					items: items
+					item: item
 				}, res);
 			});
 		}
 	}
 
 	obj.create = function (req, res) {
-		var saveSettings = function (setting, callback) {
-			Setting.findOne({name: setting.key})
-			.exec(function (err, item) {
-				if (err) {
-					return json.bad(err, res);
-				}
+		Setting.findOne({creator: req.user._id}, (err, setting) => {
+			if (err) {
+				return json.bad(err, res);
+			} else if (setting) {
+				setting.theme = req.body.theme || setting.theme;
+				setting.save((err, item) => {
+					if (err) {
+						return json.bad(err, res);
+					}
 
-				if (item) {
-					item.value = setting.val;
-				} else {
-					item = new Setting();
-					item.creator = req.user._id;
-					item.name = setting.key;
-					item.value = setting.value;
-				}
-
+					json.good({
+						record: item
+					}, res);
+				})
+			} else {
+				var item = new Setting(req.body);
+				item.creator = req.user._id;
 				item.save((err) => {
-					callback(err);
+					if (err) {
+						return json.bad(err, res);
+					}
+
+					json.good({
+						record: item
+					},res);
 				});
-			});
-		};
-
-		var items = [];
-
-		for (var key in req.body) {
-			var val = req.body[key];
-			items.push({key: key, val: val});
-		};
-
-		async.map(items, saveSettings, (err, results) => {
-			return json.good({
-				items: items,
-				results: results
-			}, res);
+			}
 		});
 	};
 
