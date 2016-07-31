@@ -5,7 +5,7 @@
 	.controller('SettingsController', SettingsController);
 
 	/* @ngInject */
-	function SettingsController ($state, appSettings, appToast) {
+	function SettingsController ($state, $rootScope, appSettings, appToast) {
 		var vm = this;
 		vm.getSettings = getSettings;
 		vm.save = save;
@@ -31,6 +31,7 @@
 			newSettings.$save(function (response) {
 				if (response.success) {
 					appToast.success('Your settings are saved');
+					$rootScope.$broadcast('settingsUpdate');
 				} else {
 					appToast.error(response.res.message);
 				}

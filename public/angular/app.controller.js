@@ -5,10 +5,15 @@
 	.controller('AppController', AppController);
 
 	/* @ngInject */
-	function AppController ($rootScope, $state, appAuth, appSettings, appToast, settingsProvider) {
+	function AppController ($rootScope, $state, $mdSidenav, appAuth, appSettings, appToast, settingsProvider) {
 		var vm = this;
+		vm.openUserMenu = openUserMenu;
 		vm.updateLoginStatus = updateLoginStatus;
 		vm.initializeSettings = initializeSettings;
+
+		function openUserMenu() {
+			$mdSidenav('left').toggle();
+		}
 
 		function updateLoginStatus() {
 			$rootScope.isLoggedIn = appAuth.isLoggedIn();
@@ -38,6 +43,10 @@
 
 		$rootScope.$on('loggedOut', function() {
 			updateLoginStatus();
+		});
+
+		$rootScope.$on('settingsUpdate', function() {
+			initializeSettings();
 		});
 	}
 }());

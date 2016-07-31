@@ -44,10 +44,35 @@
 				</div>
 
 				<div class='nav-button nav-user-button' ng-if="isLoggedIn">
-					<button></button>
+					<button ng-click="vm.openUserMenu()"></button>
 				</div>
 			</div>
 		</nav>
+
+
+		<md-sidenav md-component-id='left' class='user-menu-left md-whiteframe-z2'>
+			<div class='user-menu-left-header'>
+				<div></div>
+				<p>{{vm.user.name}}</p>
+				<p>{{vm.user.email}}</p>
+			</div>
+
+			<div class='user-menu-left-body'>
+				<md-list>
+					<md-list-item md-ink-ripple>
+						<i class='mdi mdi-account'></i>
+						<div class='inset'>
+							Profile
+						</div>
+						<button class='md-secondary'>
+							<i class='mdi mdi-arrow-down'></i>
+						</button>
+					</md-list-item>
+				</md-list>
+			</div>
+		</md-sidenav>
+			
+
 
 		<div ui-view></div>
 
