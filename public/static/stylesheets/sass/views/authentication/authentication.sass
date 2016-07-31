@@ -9,12 +9,11 @@
 .auth-page-container
 	padding-top: 30px
 	min-height: 100vh
-	background: rgba(9, 29, 56, 0.8)
+
 
 .auth-page-card
 	width: 60%
 	margin: 0 auto 5px auto
-	//background: rgba(69, 153, 172, 0.2)
 	background: transparent
 
 .auth-page-header
@@ -29,7 +28,6 @@
 		@include lato
 		font-weight: 300
 		letter-spacing: 2px
-		color: #dfe1df
 
 
 .auth-form-wrapper
@@ -43,7 +41,6 @@
 		position: absolute
 		top: 6px
 		left: 6px
-		color: #536e8c
 		@include lato
 		font-weight 300
 		z-index: 50
@@ -58,35 +55,23 @@
 		@include lato
 		font-weight: 400
 		font-size: 18px
-		color: #dfe1df
-		border: 1px solid #536e8c
-		background: none
-		outline: none
-		box-shadow: 0 -2px 4px rgba(0,0,0,0.2) inset
 		transition: all .4s ease
 
 	&.has-focus
 		label
 			left: -145px
-			color: #dfe1df
-
-		input
-			background: rgba(9, 29, 56, 0.4)
 
 	&.has-success
 		label
 			left: -145px
-			color: darken(#4ac948, 10%)
 
 	&.has-error
 		label
 			left: -145px
-			color: #ac454c
 
 		&:not(.has-focus)
 			label
 				left: -145px
-				color: #ac454c
 
 
 .auth-form-submit
@@ -103,15 +88,13 @@
 		justify-content: center
 		height: 40px
 		width: 140px
-		border: 1px solid #536e8c
-		background: transparent
 		transition: all .4s ease
 
 		span
 			@include lato
 			font-weight: 300
 			font-size: 18px
-			color: #dfe1df
+			
 
 			&.ng-enter
 				@include fadeIn()
@@ -120,19 +103,12 @@
 				@include fadeOut()
 
 		i
-			color: #dfe1df
 
 			&.ng-enter
 				@include fadeIn()
 
 			&.ng-leave
 				@include fadeOut()
-
-		&:hover
-			background: #536e8c
-
-			span
-				color: #fff
 
 .auth-page-footer
 	display: flex
@@ -144,17 +120,12 @@
 		@include lato
 		font-weight: 400
 		letter-spacing: 1px
-		color: #dbd8be
 
 		a
 			text-decoration: none
 			@include merry
 			font-weight: 300
-			color: #d19f69
 			transition: all .4s ease
-
-			&:hover
-				color: darken(#d19f69, 10%)
 
 .auth-page-social
 	display: flex
@@ -166,7 +137,6 @@
 		@include lato
 		font-weight: 300
 		letter-spacing: 1px
-		color: rgba(0,0,0,0.35)
 
 	> div
 		display: flex
@@ -181,18 +151,14 @@
 	height: 55px
 	width: 55px
 	margin-right: 8px
-	border: 1px solid #536e8c
 	border-radius: 50%
 
 	button
 		height: 45px
 		width: 45px
-		border: 1px solid #536e8c
 		background: none
 		border-radius: 50%
-
-		i
-			color: rgba(0,0,0,0.23)
+		
 
 	&:last-child
 		margin-right: 0
