@@ -73,6 +73,22 @@
 			label
 				left: -145px
 
+.auth-form-utilities
+	display: flex
+	align-items: center
+	justify-content: space-between
+	width: 90%
+	margin: 0 auto
+
+	div
+		display: inline-block
+
+		p
+			margin-bottom: 16px
+			@include lato
+			font-weight: 300
+			font-style: italic
+
 
 .auth-form-submit
 	display: flex
@@ -100,7 +116,7 @@
 				@include fadeIn()
 
 			&.ng-leave
-				@include fadeOut()
+				@include fadeIn()
 
 		i
 
@@ -108,7 +124,7 @@
 				@include fadeIn()
 
 			&.ng-leave
-				@include fadeOut()
+				@include fadeIn()
 
 .auth-page-footer
 	display: flex
@@ -158,7 +174,7 @@
 		width: 45px
 		background: none
 		border-radius: 50%
-		
+
 
 	&:last-child
 		margin-right: 0

@@ -7,12 +7,24 @@
 	/* @ngInject */
 	function LoginController ($state, $rootScope, $timeout, appStorage, appUsers, appToast) {
 		var vm = this;
+		vm.checkRemember = checkRemember;
 		vm.login = login;
 		vm.postLogin = postLogin;
 		vm.user = {
 			email: '',
 			password: ''
 		};
+
+		function checkRemember() {
+			var storedEmail = appStorage.get('userEmail');
+
+			if (storedEmail) {
+				vm.user.email = atob(storedEmail);
+				vm.isRemembered = true;
+			} else {
+				vm.user.email = '';
+			}
+		}
 
 		function login (isValid) {
 			vm.isLoading = true;
@@ -23,6 +35,15 @@
 						email: vm.user.email,
 						password: vm.user.password
 					});
+
+					if (typeof vm.remember !== 'undefined') {
+						var rememberEmail = btoa(vm.user.email);
+						appStorage.set('userEmail', rememberEmail);
+					}
+
+					if (typeof vm.forget !== 'undefined') {
+						appStorage.remove('userEmail');
+					}
 
 					auth.$save(function (response) {
 						if (response.success) {
@@ -50,5 +71,7 @@
 			appStorage.set('boilerToken', token);
 			$rootScope.$broadcast('loggedIn');
 		}
+
+		checkRemember();
 	}
 }());

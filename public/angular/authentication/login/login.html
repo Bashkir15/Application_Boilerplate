@@ -8,7 +8,7 @@
 			<div class='auth-page-body'>
 				<form name='vm.loginForm' ng-submit='vm.login(vm.loginForm.$valid)' novalidate>
 					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.loginForm.email.hasFocus,
-					'has-success': vm.loginForm.email.$valid && vm.loginForm.email.$touched,
+					'has-success': vm.loginForm.email.$valid && vm.loginForm.email.$touched || vm.isRemembered,
 					'has-error': vm.loginForm.email.$error && vm.loginForm.email.$touched && !vm.loginForm.email.$valid,
 					'is-empty': !vm.loginForm.email.$viewValue}">
 						<label>Email</label>
@@ -21,6 +21,22 @@
 					'is-empty': !vm.loginForm.password.$viewValue}">
 						<label>Password</label>
 						<input type='password' name='password' ng-model='vm.user.password' required ng-focus="vm.loginForm.password.hasFocus=true" ng-blur="vm.loginForm.password.hasFocus=false">
+					</div>
+
+					<div class='auth-form-utilities'>
+						<div>
+							<md-checkbox ng-model='vm.remember' md-true-value="'isRemembered'" ng-if="!vm.isRemembered">
+								Remember Me
+							</md-checkbox>
+
+							<md-checkbox ng-model="vm.forget" md-true-value="'isForgotten" ng-if="vm.isRemembered">
+								Forget Me
+							</md-checkbox>
+						</div>
+
+						<div>
+							<p>Forgot Password?</p>
+						</div>
 					</div>
 
 					<div class='auth-form-submit'>
