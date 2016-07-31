@@ -25,6 +25,23 @@
 		text-align: center
 		padding-bottom: 25px
 
+.auth-dialog-form
+	&.has-focus
+		label
+			left: -60px
+
+	&.has-success
+		label
+			left: -60px
+
+	&.has-error
+		label
+			left: -60px
+
+		&:not(.has-focus)
+			label
+				left: -60px
+
 .auth-dialog-actions
 	display: flex
 	align-items: center
@@ -35,6 +52,7 @@
 	padding-right: 25px
 
 	button
+		height: 45px
 		background: none
 		border: 1px solid rgba(0,0,0,0.23)
 

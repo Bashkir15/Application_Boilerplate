@@ -1,15 +1,17 @@
-
+.landing-page-container
+	display: flex
+	flex-direction: column
 
 .landing-page-header
 	position: relative
-	height: 570px
+	min-height: 570px
 
 .landing-page-image
 	position: absolute
 	top: -90px
 	left: 0
 	width: 100%
-	height: 670px
+	min-height: 670px
 	background: url(../static/images/blue-city.jpg) no-repeat
 	background-size: 100% 100%
 
@@ -19,13 +21,13 @@
 	top: -70px
 	left: 0
 	width: 100%
-	height: 630px
+	height: 650px
 
 .landing-page-overlay-content
 	display: flex
 	flex-direction: column
 	align-items: center
-	height: 647px
+	height: 650px
 	padding-top: 170px
 
 	> p
@@ -85,5 +87,52 @@
 				opacity: 1
 			
 
+@media only screen and (max-width: 610px), only screen and (max-device-width: 610px)
+	
+	.landing-page-image
+		height: 820px
+
+	.landing-page-overlay
+		height: 800px
+	.landing-page-overlay-content
+		height: 800px
+		padding-top: 100px
+
+		> p
+			padding-top: 15px
+			width: 60%
+			text-align: center
+			font-size: 33px
+
+			&:nth-of-type(2)
+				width: 60%
+
+	.landing-page-overlay-content-download
+		flex-direction: column
+		justify-content: center
+
+		button
+			&:nth-of-type(1)
+				margin-bottom: 35px
+				margin-right: 0
+
+@media only screen and (max-width: 580px), only screen and (max-device-width: 580px)
+
+	.landing-page-overlay-content
+		> p
+			width: 70%
+
+			&:nth-of-type(2)
+				width: 80%
+
+@media only screen and (max-width: 440px), only screen and (max-device-width: 440x)
+	.landing-page-image
+		height: 980px
+
+	.landing-page-overlay
+		height: 960px
+
+	.landing-page-overlay-content
+		height: 960px
 
 
