@@ -50,7 +50,7 @@ module.exports = function() {
 				}
 
 				item.save((err) => {
-					cb(err);
+					callback(err);
 				});
 			});
 		};
