@@ -16,17 +16,11 @@ var SettingsSchema = new mongoose.Schema({
 		default: Date.now
 	},
 
-	theme: {
-		type: String,
-		get: escapeProperty
-	},
+	name: String,
 
-	layout: {
-		type: String,
-		get: escapeProperty
-	},
+	value: String,
 
-	user: {
+	creator: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'User',
 		required: true
@@ -37,9 +31,9 @@ SettingsSchema.methods = {
 	toJSON: function() {
 		var obj = this.toObject();
 
-		if (obj.user) {
-			delete obj.user.password;
-			delete obj.user.token;
+		if (obj.creator) {
+			delete obj.creator.password;
+			delete obj.creator.token;
 		}
 
 		return obj;
