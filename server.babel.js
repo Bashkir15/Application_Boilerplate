@@ -9,6 +9,8 @@ import http from 'http';
 
 import Users from './server/models/users';
 import Settings from './server/models/settings';
+import Posts from './server/models/posts';
+import Comments from './server/models/comments';
 
 var configFile = require('./server/config/' + (process.env.NODE_ENV || 'development'));
 
