@@ -1,0 +1,168 @@
+//*********************************************************//
+//														   //
+//					Animation Constants 				   //
+//														   //
+//*********************************************************//
+
+
+
+
+$countDefault: 1
+$durationDefault: 1s
+$delayDefault: 0s
+$functionDefault: ease
+$fillDefault: both
+$visibilityDefault: hidden
+
+
+
+
+#animation-wrapper
+	position: realtive
+
+	> .ng-enter, > .ng-leave
+		position: absolute
+		width: 100%
+		height: 100%
+
+
+
+//*********************************************************//
+//														   //
+//					Animation Properties				   //
+//														   //
+//*********************************************************//
+
+									
+
+
+
+@mixin transform($property) 
+	-webkit-trasnform: $property
+	-moz-transform: $property
+	-ms-transform: $property
+	-o-transform: $property
+	transform: property
+
+
+@mixin count($count: 1) 
+	animation-iteration-count: $count
+
+
+@mixin duration($duration: 1s) 
+	animation-duration: $duration
+
+
+@mixin delay($delay: 0s) 
+	animation-delay: $delay
+
+
+@mixin function($function: ease) 
+	animation-timing-function: $function
+
+
+@mixin fill-mode($fill: both) 
+	animation-fill-mode: $fill
+
+
+@mixin visibility($visibility: hidden) 
+	backface-visibility: $visibility
+
+
+@mixin animation-name($animation-name) 
+	-webkit-animation-name: $animation-name
+	-moz-animation-name: $animation-name
+	-ms-animation-name: $animation-name
+	-o-animation-name: $animation-name
+	animation-name: $animation-name
+
+
+@mixin keyframes($animation-name) 
+	@-webkit-keyframes #{$animation-name} 
+		@content
+	
+
+	@-moz-keyframes #{$animation-name} 
+		@content
+	
+
+	@-ms-keyframes #{$animation-name} 
+		@content
+	
+
+	@-o-keyframes #{$animation-name} 
+		@content
+	
+
+	@keyframes #{$animation-name} 
+		@content
+	
+
+
+
+
+
+//*********************************************************//
+//														   //
+//					Animation Names      				   //
+//														   //
+//*********************************************************//
+
+
+
+
+
+
+@include keyframes(fadeIn) 
+	0% 
+		opacity: 0
+			
+	100% 
+		opacity: 1
+
+
+
+
+@include keyframes (fadeOut)
+	0%
+		opacity: 1
+
+	100%
+		opacity: 0
+
+
+
+
+
+//*********************************************************//
+//														   //
+//					Animation Mixins      				   //
+//														   //
+//*********************************************************//
+
+
+
+
+
+
+
+@mixin fadeIn($count: $countDefault, $duration: $durationDefault, $delay: $delayDefault, $function: $functionDefault, $fill: $fillDefault, $visibility: $visibilityDefault) 
+	@include animation-name(fadeIn)
+	@include count($count)
+	@include duration($duration)
+	@include delay($delay)
+	@include function($function)
+	@include fill-mode($fill)
+	@include visibility($visibility)
+
+
+
+
+@mixin fadeOut($count: $countDefault, $duration: $durationDefault, $delay: $delayDefault, $function: $functionDefault, $fill: $fillDefault, $visibility: $visibilityDefault) 
+	@include animation-name(fadeOut)
+	@include count($count)
+	@include duration($duration)
+	@include delay($delay)
+	@include function($function)
+	@include fill-mode($fill)
+	@include visibility($visibility)

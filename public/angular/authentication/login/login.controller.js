@@ -5,7 +5,7 @@
 	.controller('LoginController', LoginController);
 
 	/* @ngInject */
-	function LoginController ($state, $rootScope, appStorage, appUsers, appToast) {
+	function LoginController ($state, $rootScope, $timeout, appStorage, appUsers, appToast) {
 		var vm = this;
 		vm.login = login;
 		vm.postLogin = postLogin;
@@ -15,23 +15,33 @@
 		};
 
 		function login (isValid) {
-			if (isValid) {
-				var auth = new appUsers.authenticate({
-					email: vm.user.email,
-					password: vm.user.password
-				});
+			vm.isLoading = true;
 
-				auth.$save(function (response) {
-					if (response.success) {
-						appToast.success('Welcome back, ' + response.res.record.name);
-						postLogin(response.res.record, response.res.token);
-					} else {
-						appToast.error(response.res.message);
-					}
-				});
-			} else {
-				appToast.error('Hmm... Something seems to be missing');
-			}
+			$timeout(function() {
+				if (isValid) {
+					var auth = new appUsers.authenticate({
+						email: vm.user.email,
+						password: vm.user.password
+					});
+
+					auth.$save(function (response) {
+						if (response.success) {
+							vm.isLoading = false;
+							vm.isSuccess = true;
+							appToast.success('Welcome back, ' + response.res.record.name);
+							postLogin(response.res.record, response.res.token);
+						} else {
+							vm.isLoading = false;
+							vm.tryAgain = true;
+							appToast.error(response.res.message);
+						}
+					});
+				} else {
+					vm.isLoading = false;
+					vm.tryAgain = true;
+					appToast.error('Hmm... Something seems to be missing');
+				}
+			}, 500);
 		}
 
 		function postLogin (user, token) {

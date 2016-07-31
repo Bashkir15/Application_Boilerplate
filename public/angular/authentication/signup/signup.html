@@ -7,34 +7,52 @@
 
 			<div class='auth-page-body'>
 				<form name='vm.signupForm' ng-submit="vm.signup(vm.signupForm.$valid)" novalidate>
-					<div class='auth-form-wrapper'>
+					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.name.hasFocus,
+					'has-success': vm.signupForm.name.$valid && vm.signupForm.name.$touched,
+					'has-error':  vm.signupForm.name.$error && vm.signupForm.name.$touched && !vm.signupForm.name.$valid,
+					'is-empty': !vm.signupForm.name.$viewValue}">
 						<label>Name</label>
-						<input type='text' name='name' ng-model='vm.user.name' required>
+						<input type='text' name='name' ng-model='vm.user.name' required ng-focus='vm.signupForm.name.hasFocus=true' ng-blur="vm.signupForm.name.hasFocus=false">
 					</div>
 
-					<div class='auth-form-wrapper'>
+					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.username.hasFocus,
+					'has-success': vm.signupForm.username.$valid && vm.signupForm.username.$touched,
+					'has-error':  vm.signupForm.username.$error && vm.signupForm.username.$touched && !vm.signupForm.username.$valid,
+					'is-empty': !vm.signupForm.username.$viewValue}">
 						<label>Username</label>
-						<input type='text' name='username' ng-model='vm.user.username' required>
+						<input type='text' name='username' ng-model='vm.user.username' required ng-focus="vm.signupForm.username.hasFocus=true" ng-blur="vm.signupForm.username.hasFocus=false">
 					</div>
 
-					<div class='auth-form-wrapper'>
+					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.email.hasFocus,
+					'has-success': vm.signupForm.email.$valid && vm.signupForm.email.$touched,
+					'has-error':  vm.signupForm.email.$error && vm.signupForm.email.$touched && !vm.signupForm.email.$valid,
+					'is-empty': !vm.signupForm.email.$viewValue}">
 						<label>Email</label>
-						<input type='email' name='email' ng-model='vm.user.email' required>
+						<input type='email' name='email' ng-model='vm.user.email' required ng-focus='vm.signupForm.email.hasFocus=true' ng-blur="vm.signupForm.email.hasFocus=false">
 					</div>
 
-					<div class='auth-form-wrapper'>
+					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.password.hasFocus,
+					'has-success': vm.signupForm.password.$valid && vm.signupForm.password.$touched,
+					'has-error':  vm.signupForm.password.$error && vm.signupForm.password.$touched && !vm.signupForm.password.$valid,
+					'is-empty': !vm.signupForm.password.$viewValue}">
 						<label>Password</label>
-						<input type='password' name='password' ng-model='vm.user.password' required>
+						<input type='password' name='password' ng-model='vm.user.password' required ng-focus="vm.signupForm.password.hasFocus=true" ng-blur="vm.signupForm.password.hasFocus=false">
 					</div>
 
-					<div class='auth-form-wrapper'>
+					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.confirm.hasFocus,
+					'has-success': vm.signupForm.confirm.$valid && vm.signupForm.confirm.$touched,
+					'has-error':  vm.signupForm.confirm.$error && vm.signupForm.confirm.$touched && !vm.signupForm.confirm.$valid,
+					'is-empty': !vm.signupForm.confirm.$viewValue}">
 						<label>Confirm Password</label>
-						<input type='password' name='confirm' ng-model='vm.user.confirm' requried>
+						<input type='password' name='confirm' ng-model='vm.user.confirm' required ng-focus='vm.signupForm.confirm.hasFocus=true' ng-blur="vm.signupForm.confirm.hasFocus=false">
 					</div>
 
 					<div class='auth-form-submit'>
 						<button type='submit' aria-label='submit signup form'>
-							<span>Signup</span>
+							<span ng-if="!vm.isLoading && !vm.tryAgain && !vm.isSuccess">Signup</span>
+							<span ng-if="vm.tryAgain && !vm.isSuccess">Try Again?</span>
+							<md-progress-circular md-mode="indeterminate" md-diameter='25' class='application-button-loading-bar' ng-if="vm.isLoading"></md-progress-circular>
+							<i class='mdi mdi-check' ng-if="vm.isSuccess"></i> 
 						</button>
 					</div>
 				</form>
@@ -43,7 +61,7 @@
 
 
 		<div class='auth-page-footer'>
-			<p>Already have an account? <a ui-sref='login'>Login Here</a></p>
+			<p>Already have an account? <a ui-sref='auth.login'>Login Here</a></p>
 		</div>
 	</div>
 </div>

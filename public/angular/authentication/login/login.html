@@ -7,19 +7,28 @@
 
 			<div class='auth-page-body'>
 				<form name='vm.loginForm' ng-submit='vm.login(vm.loginForm.$valid)' novalidate>
-					<div class='auth-form-wrapper'>
+					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.loginForm.email.hasFocus,
+					'has-success': vm.loginForm.email.$valid && vm.loginForm.email.$touched,
+					'has-error': vm.loginForm.email.$error && vm.loginForm.email.$touched && !vm.loginForm.email.$valid,
+					'is-empty': !vm.loginForm.email.$viewValue}">
 						<label>Email</label>
-						<input type='email' name='email' ng-model='vm.user.email' required>
+						<input type='email' name='email' ng-model='vm.user.email' required ng-focus="vm.loginForm.email.hasFocus=true" ng-blur="vm.loginForm.email.hasFocus=false">
 					</div>
 
-					<div class='auth-form-wrapper'>
+					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.loginForm.password.hasFocus,
+					'has-success': vm.loginForm.password.$valid && vm.loginForm.password.$touched,
+					'has-error': vm.loginForm.password.$error && vm.loginForm.password.$touched && !vm.loginForm.password.$valid,
+					'is-empty': !vm.loginForm.password.$viewValue}">
 						<label>Password</label>
-						<input type='password' name='password' ng-model='vm.user.password' required>
+						<input type='password' name='password' ng-model='vm.user.password' required ng-focus="vm.loginForm.password.hasFocus=true" ng-blur="vm.loginForm.password.hasFocus=false">
 					</div>
 
 					<div class='auth-form-submit'>
 						<button type='submit' aria-label='login form submit'>
-							<span>Login</span>
+							<span ng-if='!vm.isLoading && !vm.tryAgain && !vm.isSuccess'>Login</span>
+							<span ng-if='vm.tryAgain && !vm.isSuccess'>Try Again?</span>
+							<md-progress-circular md-mode="indeterminate" md-diameter='25' class='application-button-loading-bar' ng-if="vm.isLoading"></md-progress-circular>
+							<i class='mdi mdi-check' ng-if="vm.isSuccess"></i> 
 						</button>
 					</div>
 				</form>
@@ -28,7 +37,7 @@
 
 
 		<div class='auth-page-footer login-page-footer'>
-			<p>Don't have an account yet? <a ui-sref='signup'>Signup Here</a></p>
+			<p>Don't have an account yet? <a ui-sref='auth.signup'>Signup Here</a></p>
 
 			<div class='decorator-circle'>
 				<div class='circle'></div>

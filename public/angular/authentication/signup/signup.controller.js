@@ -5,7 +5,7 @@
 	.controller('SignupController', SignupController);
 
 	/* @ngInject */
-	function SignupController ($state, $rootScope, appStorage, appUsers, appToast, appAuth) {
+	function SignupController ($state, $rootScope, $timeout, appStorage, appUsers, appToast, appAuth) {
 
 		var vm = this;
 
@@ -21,31 +21,38 @@
 		};
 
 		function signup (isValid) {
+			vm.isLoading = true;
 
-			if (isValid) {
+			$timeout(function() {
+				if (isValid) {
 
-				var user = new appUsers.single({
+					var user = new appUsers.single({
 
-					name: vm.user.name,
-					username: vm.user.username,
-					email: vm.user.email,
-					password: vm.user.password
+						name: vm.user.name,
+						username: vm.user.username,
+						email: vm.user.email,
+						password: vm.user.password
 
-				});
+					});
 
-				user.$save(function (response) {
-					if (response.success) {
-						appToast.success('Welcome, ' + response.res.record.name);
-						postSignup(response.res.record, response.res.token);
-					} else {
-						appToast.error(response.res.message);
-					}
-				});
-
-			} else {
-
-				appToast.error('Hmm... Something seems to be missing');
-			}
+					user.$save(function (response) {
+						if (response.success) {
+							vm.isLoading = false;
+							vm.isSuccess = true;
+							appToast.success('Welcome, ' + response.res.record.name);
+							postSignup(response.res.record, response.res.token);
+						} else {
+							vm.isLoading = false;
+							vm.tryAgain = true;
+							appToast.error(response.res.message);
+						}
+					});
+				} else {
+					vm.isLoading = false;
+					vm.tryAgain = true;
+					appToast.error('Hmm... Something seems to be missing');
+				}
+			}, 500);
 		}
 
 		function postSignup (user, token) {

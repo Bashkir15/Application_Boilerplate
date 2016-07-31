@@ -1,3 +1,29 @@
+.application-button-loading-bar
+	.md-scale-wrapper
+		.md-spinner-wrapper
+			.md-inner
+
+				.md-gap
+					border-top-color: #dfe1df
+					border-bottom-color: #dfe1df
+
+				.md-left
+					.md-half-circle
+						border-left-color: #dfe1df
+						border-top-color: #dfe1df
+
+				.md-right
+					.md-half-circle
+						border-right-color: #dfe1df
+						border-top-color: #dfe1df
+						border-bottom-color: #dfe1df
+
+	&.ng-enter
+		@include fadeIn()
+
+	&.ng-leave
+		@include fadeOut()
+
 .decorator-circle
 	position: relative
 	width: 50%
