@@ -9,8 +9,11 @@
 		var vm = this;
 		vm.close = close;
 		vm.generateReset = generateReset;
+		vm.attemptReset = attemptReset;
 		vm.attempt = {
-			email: ''
+			email: '',
+			token: '',
+			password: '',
 		};
 
 		function close() {
@@ -25,7 +28,22 @@
 			generateToken.$forgot({email: vm.attempt.email}, function (response) {
 				if (response.success) {
 					vm.tokenSent = true;
-					appToast.success('Yay@');
+					appToast.success('Great! Now you can check your email for your token');
+				} else {
+					appToast.error(response.res.message);
+				}
+			});
+		}
+
+		function attemptReset() {
+			var sendToken = new appUsers.reset({
+				token: vm.attempt.token,
+				password: vm.attempt.password
+			});
+
+			sendToken.$save(function (response) {
+				if (response.success) {
+					appToast.success('Hooray!');
 				} else {
 					appToast.error(response.res.message);
 				}

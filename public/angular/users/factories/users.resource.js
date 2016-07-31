@@ -18,8 +18,7 @@
 
 			authenticate: $resource('users/authenticate'),
 
-			forgot: $resource('users/forgot'),
-			reset: $resource('users/forgot/:token')
+			reset: $resource('users/forgot/reset')
 		};
 	}
 }());

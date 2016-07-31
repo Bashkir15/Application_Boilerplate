@@ -353,7 +353,7 @@ module.exports = function() {
 	obj.processReset = function (req, res) {
 		async.waterfall([
 			function (done) {
-				User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now()}}, function (err, user) {
+				User.findOne({resetPasswordToken: req.body.token, resetPasswordExpires: { $gt: Date.now()}}, function (err, user) {
 					if (err) {
 						return json.bad(err, res);
 					}
@@ -362,12 +362,11 @@ module.exports = function() {
 						return json.bad({message: 'The password reset token is invalid or has expired, please try again'}, res);
 					}
 
-					user.password = req.body.password;
+					user.password = req.body.password
 					user.resetPasswordToken = undefined;
 					user.resetPasswordExpires = undefined;
 
 					user.save((err) => {
-						var token = jwt.sign(user, global.config.secret, { expiresIn: 10800});
 
 						if (err) {
 							return json.bad(err, res);
@@ -375,23 +374,29 @@ module.exports = function() {
 
 						json.good({
 							record: user,
-							token: token
+							token: user.token
 						}, res);
 					});
 				});
 			},
 
 			function (user, done) {
-				var mailTransport = mailer.transport;
+				var mailTransport = nodemailer.createTransport({
+					service: global.config.mailer.service,
+					auth: {
+						user: global.config.mailer.auth.user,
+						pass: global.config.mailer.auth.pass
+					}
+				});
 				var mailOptions = {
 					to: user.email,
-					from: 'authenticaton.boilerplate@gmail.com',
+					from: global.config.mailer.auth.user,
 					subject: 'Your password has been changed',
 					text: 'This is a confirmation to let you know that the password for your account with the email ' + user.email + ' has just been changed'
 				};
 
-				mailTransport.sendMail(mailTransport, (err) => {
-					done(err);
+				mailTransport.sendMail(mailTransport, (err, info) => {
+					done(err, 'done');
 				});
 			}
 		], function (err) {

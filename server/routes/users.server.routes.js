@@ -8,7 +8,7 @@ router.post('/', users.create);
 router.post('/authenticate', users.authenticate);
 router.get('/recent', users.recent);
 router.post('/forgot', users.forgot);
-router.post('/forgot/:token', users.processReset);
+router.post('/forgot/reset', users.processReset);
 router.get('/:username', auth.justGetUser, users.single);
 router.post('/:username/follow', auth.ensureAuthorized, users.follow);
 router.post('/:username/unfollow', auth.ensureAuthorized, users.unfollow);
