@@ -78,6 +78,49 @@
 		height: 36px
 		width: 36px
 		border-radius: 50%
+
+.user-menu-left
+
+.user-menu-left-header
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
+	padding-top: 20px
+
+	> div
+		height: 45px
+		width: 45px
+		border-radius: 50%
+
+	p
+		@include lato
+		font-weight: 300
+		padding-top: 8px
+
+.user-menu-left-body
+	md-list
+		md-list-item
+			a
+				margin: 0
+
+				> div
+					i
+						padding-right: 10px
+
+					.inset
+						@include lato
+						font-weight: 300
+			button
+				border: none
+				background: none
+
+				i
+					display: inline-block
+					transition: all .4s ease
+
+					&.open
+						transform: rotate(-180deg)
 		
 
 @import "./landing/landing"

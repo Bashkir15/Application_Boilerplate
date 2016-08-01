@@ -44,7 +44,7 @@
 		</nav>
 
 
-		<md-sidenav md-component-id='left' class='user-menu-left md-whiteframe-z2'>
+		<md-sidenav md-component-id='left' class='user-menu-left md-whiteframe-z2' ng-class="settings.theme">
 			<div class='user-menu-left-header'>
 				<div></div>
 				<p>{{user.name}}</p>
@@ -53,7 +53,7 @@
 
 			<div class='user-menu-left-body'>
 				<md-list>
-					<md-list-item md-ink-ripple>
+					<md-list-item md-ink-ripple ui-sref='setting'>
 						<i class='mdi mdi-account'></i>
 						<div class='inset'>
 							Profile
@@ -63,8 +63,8 @@
 						</button>
 					</md-list-item>
 
-					<md-list-item md-ink-ripple>
-						<i class='mdi mdi-account'></i>
+					<md-list-item md-ink-ripple ui-sref='setting'>
+						<i class='mdi mdi-comment-multiple-outline'></i>
 						<div class='inset'>
 							Messages
 						</div>
@@ -75,13 +75,14 @@
 					</md-list-item>
 
 					<md-list-item md-ink-ripple ui-sref="setting">
-						<i class='mdi mdi-account'></i>
+						<i class='mdi mdi-settings'></i>
 						<div class='inset'>
 							Settings
 						</div>
 					</md-list-item>
 
 					<md-list-item md-ink-ripple ui-sref='auth.logout'>
+						<i class='mdi mdi-logout'></i>
 						<div class='inset'>
 							Logout
 						</div>

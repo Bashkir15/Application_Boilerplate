@@ -13,6 +13,11 @@
 					'is-empty': !vm.signupForm.name.$viewValue}">
 						<label>Name</label>
 						<input type='text' name='name' ng-model='vm.user.name' required ng-focus='vm.signupForm.name.hasFocus=true' ng-blur="vm.signupForm.name.hasFocus=false">
+						<div class='auth-form-error' ng-messages="vm.signupForm.name.$error" ng-if="vm.signupForm.name.$touched">
+							<div ng-message='required'>
+								<span>Sorry, your name is required</span>
+							</div>
+						</div>
 					</div>
 
 					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.username.hasFocus,
@@ -21,6 +26,11 @@
 					'is-empty': !vm.signupForm.username.$viewValue}">
 						<label>Username</label>
 						<input type='text' name='username' ng-model='vm.user.username' required ng-focus="vm.signupForm.username.hasFocus=true" ng-blur="vm.signupForm.username.hasFocus=false">
+						<div class='auth-form-error' ng-messages='vm.signupForm.username.$error' ng-if="vm.signupForm.username.$touched">
+							<div ng-message='required'>
+								<span>Sorry, your username is required</span>
+							</div>
+						</div>
 					</div>
 
 					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.email.hasFocus,
@@ -29,6 +39,11 @@
 					'is-empty': !vm.signupForm.email.$viewValue}">
 						<label>Email</label>
 						<input type='email' name='email' ng-model='vm.user.email' required ng-focus='vm.signupForm.email.hasFocus=true' ng-blur="vm.signupForm.email.hasFocus=false">
+						<div class='auth-form-error' ng-messages='vm.signupForm.email.$error' ng-if="vm.signupForm.email.$touched">
+							<div ng-message='required'>
+								<span>Sorry, your email is required</span>
+							</div>
+						</div>
 					</div>
 
 					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.password.hasFocus,
@@ -37,6 +52,11 @@
 					'is-empty': !vm.signupForm.password.$viewValue}">
 						<label>Password</label>
 						<input type='password' name='password' ng-model='vm.user.password' required ng-focus="vm.signupForm.password.hasFocus=true" ng-blur="vm.signupForm.password.hasFocus=false">
+						<div class='auth-form-error' ng-messages='vm.signupForm.password.$error' ng-if="vm.signupForm.password.$touched">
+							<div ng-message='required'>
+								<span>Sorry, your password is required</span>
+							</div>
+						</div>
 					</div>
 
 					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.signupForm.confirm.hasFocus,
@@ -45,6 +65,11 @@
 					'is-empty': !vm.signupForm.confirm.$viewValue}">
 						<label>Confirm Password</label>
 						<input type='password' name='confirm' ng-model='vm.user.confirm' required ng-focus='vm.signupForm.confirm.hasFocus=true' ng-blur="vm.signupForm.confirm.hasFocus=false">
+						<div class='auth-form-error' ng-messages='vm.signupForm.confirm.$error' ng-if="vm.signupForm.confirm.$touched">
+							<div ng-message='required'>
+								<span>Sorry, you need to confirm your password</span>
+							</div>
+						</div>
 					</div>
 
 					<div class='auth-form-submit'>

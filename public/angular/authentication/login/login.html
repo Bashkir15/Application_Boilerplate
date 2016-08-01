@@ -13,6 +13,11 @@
 					'is-empty': !vm.loginForm.email.$viewValue}">
 						<label>Email</label>
 						<input type='email' name='email' ng-model='vm.user.email' required ng-focus="vm.loginForm.email.hasFocus=true" ng-blur="vm.loginForm.email.hasFocus=false">
+						<div class='auth-form-error' ng-messages='vm.loginForm.email.$error' ng-if="vm.loginForm.email.$touched">
+							<div ng-message='required'>
+								<span>Sorry, you need your email to login</span>
+							</div>
+						</div>
 					</div>
 
 					<div class='auth-form-wrapper' ng-class="{'has-focus': vm.loginForm.password.hasFocus,
@@ -21,6 +26,11 @@
 					'is-empty': !vm.loginForm.password.$viewValue}">
 						<label>Password</label>
 						<input type='password' name='password' ng-model='vm.user.password' required ng-focus="vm.loginForm.password.hasFocus=true" ng-blur="vm.loginForm.password.hasFocus=false">
+						<div class='auth-form-error' ng-messages='vm.loginForm.password.$error' ng-if="vm.loginForm.password.$touched">
+							<div ng-message='required'>
+								<span>Sorry, you need your password to login</span>
+							</div>
+						</div>
 					</div>
 
 					<div class='auth-form-utilities'>
