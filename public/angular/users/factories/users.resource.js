@@ -30,7 +30,7 @@
 					method: 'POST',
 					params: {action: 'destroy'}
 				},
-				
+
 				forgot: {
 					method: 'POST',
 					params: {action: 'forgot'}
@@ -38,7 +38,6 @@
 			}),
 
 			authenticate: $resource('users/authenticate'),
-
 			reset: $resource('users/forgot/reset')
 		};
 	}
