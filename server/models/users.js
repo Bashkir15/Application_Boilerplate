@@ -76,6 +76,22 @@ var UserSchema = new mongoose.Schema({
 		default: 0
 	},
 
+	gender: {
+		type: String
+	},
+
+	phone: {
+		type: String
+	},
+
+	occupation: {
+		type: String
+	},
+
+	bio: {
+		type: String
+	},
+
 	socketId: {
 		type: String,
 		default: ''

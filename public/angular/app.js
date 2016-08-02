@@ -6,5 +6,6 @@
 		'application.boiler.authentication',
 		'application.boiler.users',
 		'application.boiler.settings',
-		'application.boiler.landing'])
+		'application.boiler.landing',
+		'application.boiler.dashboard'])
 }());

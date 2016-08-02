@@ -27,6 +27,7 @@ var User = mongoose.model('User');
 		obj.follow = Follow A User,
 		obj.unfollow = Unfollow A User,
 		obj.profile = View Profile & Increment profileViews
+		obj.editProfile = Edit Profile Info
 	}
 
 	User Utilities: {
@@ -582,6 +583,39 @@ module.exports = function() {
 
 				json.good({
 					record: item
+				}, res);
+			});
+		});
+	};
+
+
+
+
+	/**
+	  *
+	  	Find a user by their usernames and then update their profile information, or if no information is provider
+	  	return their default infomation
+	  *
+	**/
+
+	obj.editProfile = function (req, res) {
+		User.findOne({username: req.params.username})
+		.exec((err, user) => {
+			if (err) {
+				return json.bad(err, res);
+			}
+
+			user.gender = req.body.gender || user.gender;
+			user.phone = req.body.phone || user.phone;
+			user.occupation = req.body.occupation || user.occupation;
+			user.bio = req.body.bio || user.bio;
+			user.save((err) => {
+				if (err) {
+					return json.bad(err, res);
+				}
+
+				json.good({
+					record: user
 				}, res);
 			});
 		});
