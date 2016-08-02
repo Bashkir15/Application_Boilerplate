@@ -16,7 +16,10 @@ var SettingsSchema = new mongoose.Schema({
 		default: Date.now
 	},
 
-	theme: String,
+	theme: {
+		type: String,
+		default: 'default'
+	},
 
 	creator: {
 		type: mongoose.Schema.ObjectId,

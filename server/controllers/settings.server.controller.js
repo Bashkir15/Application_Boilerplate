@@ -11,7 +11,6 @@ module.exports = function() {
 	obj.get = function (req, res) {
 		if (req.user) {
 			Setting.findOne({creator: req.user._id})
-			.lean()
 			.exec((err, item) => {
 				var hasNoSettings;
 

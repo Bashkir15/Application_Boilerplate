@@ -7,6 +7,7 @@ import nodemailer from 'nodemailer';
 import mailer from '../helpers/mailer';
 
 var User = mongoose.model('User');
+var Setting = mongoose.model('Setting');
 
 
 
@@ -86,6 +87,14 @@ module.exports = function() {
 				if (err) {
 					return json.bad(err, res);
 				}
+
+				var settings = new Setting();
+				settings.creator = user._id;
+				settings.save((err) => {
+					if (err) {
+						return json.bad(err, res);
+					}
+				});
 
 
 

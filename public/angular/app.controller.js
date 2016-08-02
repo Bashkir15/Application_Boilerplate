@@ -23,11 +23,7 @@
 		function initializeSettings() {
 			if (appAuth.isLoggedIn()) {
 				var settingsData = appSettings.single.get({}, function() {
-					if (settingsData.res.hasNoSettings) {
-						$rootScope.settings = settingsProvider.settings;
-					} else {
-						$rootScope.settings = settingsData.res.item;
-					}
+					$rootScope.settings = settingsData.res.item;
 				});
 			} else {
 				$rootScope.settings = settingsProvider.settings;
@@ -39,14 +35,19 @@
 
 		$rootScope.$on('loggedIn', function() {
 			updateLoginStatus();
+			initializeSettings();
 		});
 
 		$rootScope.$on('loggedOut', function() {
 			updateLoginStatus();
+			initializeSettings();
+
 		});
 
 		$rootScope.$on('settingsUpdate', function() {
 			initializeSettings();
 		});
+
+		initializeSettings();
 	}
 }());
