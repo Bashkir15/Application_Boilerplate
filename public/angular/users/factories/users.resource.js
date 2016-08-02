@@ -7,8 +7,8 @@
 	/* @ngInject */
 	function appUsers ($resource) {
 		return {
-			single: $resource('users/:userId/:action', {
-				userId: '@_id'
+			single: $resource('users/:username/:action', {
+
 			}, {
 				forgot: {
 					method: 'POST',
