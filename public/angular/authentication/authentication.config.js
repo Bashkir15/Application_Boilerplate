@@ -31,5 +31,12 @@
 			templateUrl: '/angular/landing/landing.html',
 			controller: 'LogoutController'
 		});
+
+		$stateProvider.state("auth.info", {
+			url: '/:username/profile-info',
+			templateUrl: '/angular/authentication/profileInfo/profile-info.html',
+			controller: 'ProfileInfoController',
+			controllerAs: 'vm'
+		});
 	}
 }());

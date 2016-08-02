@@ -5,7 +5,7 @@
 	.controller('SignupController', SignupController);
 
 	/* @ngInject */
-	function SignupController ($state, $rootScope, $timeout, appStorage, appUsers, appToast, appAuth) {
+	function SignupController ($state, $rootScope, $timeout, $location, appStorage, appUsers, appToast, appAuth) {
 
 		var vm = this;
 
@@ -59,7 +59,7 @@
 			var serialized = angular.toJson(user);
 			appStorage.set('user', serialized);
 			appStorage.set('boilerToken', token);
-
+			$location.url(user.username + '/profile-info');
 			$rootScope.$broadcast('loggedIn');
 		}
 	}
