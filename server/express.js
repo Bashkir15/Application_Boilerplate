@@ -9,8 +9,8 @@ import indexRoutes from './routes/index.server.routes';
 import userRoutes from './routes/users.server.routes';
 import settingRoutes from './routes/settings.server.routes';
 
-module.exports = function (db) {
-	var app = express();
+module.exports = (db) => {
+	const app = express();
 
 	app.set('views', path.join(__dirname, '../public'));
 	app.set('view engine', 'ejs');

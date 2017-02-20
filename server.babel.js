@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import http from 'http';
+import expressConfig from './server/express'
 
 /**
  *
@@ -12,19 +13,16 @@ import Settings from './server/models/settings';
 import Posts from './server/models/posts';
 import Comments from './server/models/comments';
 
-var configFile = require('./server/config/' + (process.env.NODE_ENV || 'development'));
-
-global.config = configFile;
-
-var db = mongoose.connect(global.config.db, () => {
+const environment = (process.env.NODE_ENV || 'develoment');
+const appConfig = require(`./server/config/${environment}`);
+const db = mongoose.connect(appConfig.db, () => {
 	console.log('The application has connected to the ' + global.config.db + ' database');
 });
+const app = expressConfig(db);
+const server = http.createServer(app);
 
-var app = require('./server/express')(db);
-var server = http.createServer(app);
-
-global.server = server;
-
-global.server.listen(global.config.server.port, () => {
-	console.log('The application has connected to ' + global.config.server.host + global.config.server.port + ' and the environment is currently set to ' + (process.env.NODE_ENV || 'development'));
+server.listen(appConfig.port, () => {
+	console.log(`The application is running at ${appConfig.server.host}${appConfig.server.port}, and the environment is currently ${environment}`);
 });
+
+global.config = appConfig;
