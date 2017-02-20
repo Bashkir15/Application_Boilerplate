@@ -1,27 +1,30 @@
-module.exports = {
-	good: function (obj, res) {
-		res.send({
-			success: 1,
-			res: obj
-		});
-	},
+function good(obj, res) {
+	res.send({
+		success: 1,
+		res: obj
+	});
+}
 
-	bad: function (err, res) {
-		var obj = {
-			success: 0,
-			res: err
-		};
+function bad(err, res) {
+	let obj = {
+		success: 0,
+		res: obj
+	};
 
-		if (obj.res.errors) {
-			obj.res.messages = [];
+	if (obj.res.errors) {
+		obj.res.messages = [];
 
-			for (var i in obj.res.errors) {
-				obj.res.messages.push(obj.res.errors[i].message);
-			}
-
-			obj.res.message = obj.res.messages[0];
+		for (let i in obj.res.errors) {
+			obj.res.messages.push(obj.res.errors[i].message);
 		}
 
-		res.send(obj);
+		obj.res.message = obj.res.messages[0];
 	}
+
+	res.send(obj);
+}
+
+module.exports = {
+	good: good,
+	bad: bad
 };
