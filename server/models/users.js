@@ -22,7 +22,7 @@ const escapeProperty = function (value) {
 
 
 
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
 	created: {
 		type: Date,
 		default: Date.now
