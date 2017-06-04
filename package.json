@@ -4,12 +4,14 @@
   "description": "\"A Node Boilerplate for constructing full-fledged applications quickly\"",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "test": "ava ./tests/**/*."
   },
   "repository": "https://github.com/Bashkir15/Application_Boilerplate",
   "author": "Forrest Collins <Forest.d.collins@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "ava": "^0.19.1",
     "chalk": "^1.1.3",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
@@ -32,5 +34,10 @@
     "morgan": "^1.8.2",
     "util": "^0.10.3",
     "winston": "^2.3.1"
+  },
+  "ava": {
+    "files": [
+        "./tests/**/*"
+    ]
   }
 }

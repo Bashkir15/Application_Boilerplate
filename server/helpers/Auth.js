@@ -2,11 +2,12 @@ const jwt = require('jsonwebtoken');
 const APIError = require('./APIError');
 
 
+const wrapSecret = secret => cb => secret;
+
 module.exports = (options) => {
     const obj = {};
-    const secret = global.config.SECRET;
 
-    let { required } = options;
+    let { required, secret } = options;
 
     if (!options || !options.secret) {
         throw new Error('There is no secret set');
@@ -14,6 +15,10 @@ module.exports = (options) => {
 
     if (typeof required === 'undefined') {
         required = true;
+    }
+
+    if (typeof secret !== 'function') {
+        secret = wrapSecret(secret);
     }
 
     obj.middleware = (req, res, next) => {
@@ -59,7 +64,7 @@ module.exports = (options) => {
         }
 
         return jwt.verify(token, secret, (err) => {
-            if (err) {
+            if (err && required) {
                 return next(new APIError({
                     status: 403,
                 }));
