@@ -3,12 +3,11 @@ const bodyParser = require('body-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
 const httpStatus = require('http-status');
-const expressWinston = require('express-winston');
+// const expressWinston = require('express-winston');
 const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const simpleLogger = require('morgan');
 const APIError = require('../helpers/APIError');
-import Logger from '../helpers/Logger';
 
 module.exports = () => {
     const app = express();

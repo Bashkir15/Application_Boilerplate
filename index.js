@@ -4,7 +4,9 @@ const promise = require('bluebird');
 const dotenv = require('dotenv');
 const expressConfig = require('./server/config/express')();
 
-dotenv.load({path: '.env.example'});
+dotenv.load({
+    path: '.env.example',
+});
 
 const { env } = process;
 const appConfig = Object.assign({}, {
