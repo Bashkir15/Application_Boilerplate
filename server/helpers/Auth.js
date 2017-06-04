@@ -22,7 +22,7 @@ module.exports = (options) => {
 
         if (req.headers && req.headers.authorization) {
             const parts = req.headers.authorization.split(' ');
-            const { scheme, bearer } = parts;
+            const [ scheme, bearer ] = parts;
 
             if (/^Bearer$/i.test(scheme)) {
                 token = bearer;
