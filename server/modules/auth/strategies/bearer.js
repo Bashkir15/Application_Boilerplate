@@ -1,6 +1,6 @@
 const passport = require('passport');
 const mongoose = require('mongoose');
-const BearerStrategy = require('password-http-bearer').Strategy;
+const BearerStrategy = require('passport-http-bearer').Strategy;
 const tokens = require('../../../helpers/Tokens');
 const User = require('../../users/model').User;
 

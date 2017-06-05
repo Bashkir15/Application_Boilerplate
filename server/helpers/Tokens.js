@@ -13,7 +13,7 @@ const TYPES = new Map();
 /* eslint-disable no-param-reassign */
 
 module.exports = {
-    setDeafults(config) {
+    setDefaults(config) {
         Object.assign(defaults, config);
     },
 
@@ -38,11 +38,11 @@ module.exports = {
 
     generate(type, claims) {
         if (!TYPES.has(type)) {
-            // throw err
+            console.log('unknown token')
         }
 
-        const config = TYPES.get(type);
-        return jwt.sign(claims, config,secret, {
+        let config = TYPES.get(type);
+        return jwt.sign(claims, config.secret, {
             audience: config.audience,
             issuer: config.issuer,
             expiresIn: config.expiration,

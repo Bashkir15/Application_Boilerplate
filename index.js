@@ -28,7 +28,7 @@ mongoose.connection.on('error', () => {
 } */
 
 const server = http.createServer(expressConfig);
-server.listen(appConfig.SERVER_HOST, () => {
+server.listen(appConfig.SERVER_PORT, () => {
     console.log(`The application is running at: ${appConfig.SERVER_HOST}${appConfig.SERVER_PORT}`);
 });
 

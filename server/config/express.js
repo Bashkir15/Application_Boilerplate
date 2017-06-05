@@ -8,6 +8,9 @@ const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const simpleLogger = require('morgan');
 const APIError = require('../helpers/APIError');
+const userRoutes = require('../modules/users/routes');
+const auth = require('../modules/auth/auth');
+const tokens = require('../helpers/Tokens');
 
 module.exports = () => {
     const app = express();
@@ -15,22 +18,23 @@ module.exports = () => {
 
     if (env === 'development') {
         app.use(simpleLogger('dev'));
-       /* expressWinston.requestWhitelist.push('body');
-        expressWinston.responseWhitelist.push('body');
-        app.use(expressWinston.logger({
-            Logger,
-            meta: true,
-            msg: '{{HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
-            colorStatus: true,
-        })); */
     }
 
-   /* if (env !== 'test') {
-        app.use(expressWinston.errorLogger({
-            Logger,
-        }));
-    } */
+    tokens.setDefaults({
+        issuer: 'localhost:8000',
+        audience: 'localhost:8000',
+    });
+    tokens.register({
+        access: {
+            secret: 'test',
+            expiration: 3600,
+        },
 
+        refresh: {
+            secret: 'test',
+            expiration: 30 * 24 * 3600,
+        },
+    });
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -43,6 +47,8 @@ module.exports = () => {
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Authorization');
         next();
     });
+
+    auth(app);
 
     app.use((err, req, res, next) => {
         if (err instanceof expressValidation.ValidationError) {
@@ -57,10 +63,14 @@ module.exports = () => {
         return next(err);
     });
 
-    app.use((err, req, res) => {
+   /* app.use((err, req, res) => {
         res.status(err.status).json({
             message: err.isPublic ? err.message : httpStatus[err.status],
             stack: env === 'development' ? err.stack : {},
         });
-    });
+    }); */
+
+    app.use('/users', userRoutes);
+
+    return app;
 };
