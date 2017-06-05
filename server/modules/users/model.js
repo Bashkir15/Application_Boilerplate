@@ -81,12 +81,13 @@ userSchema.pre('save', async function(next) {
 });
 
 userSchema.methods = {
-    comparePasswords: function(candidatePassword, callback) {
-        bcrypt.compare(candidatePassword, this.password, (error, isMatch) => {
+    comparePassword: function(candidatePassword, cb) {
+        const user = this;
+        bcrypt.compare(candidatePassword, user.password, (error, isMatch) => {
             if (error) {
                 return cb(error);
             }
-            cb(null, itMatch);
+            cb(null, isMatch);
         });
     },
 
@@ -109,17 +110,21 @@ userSchema.methods = {
     },
 };
 
+function populate(query) {
+    return query;
+
+}
 userSchema.statics = {
     findById: function(id) {
         const query = this.findById(id);
-        return query;
+        return populate(query);
     },
 
     findByEmail: function(email) {
         const query = this.findOne({
             email: email,
         });
-        return query;
+        return populate(query);
     },
 };
 

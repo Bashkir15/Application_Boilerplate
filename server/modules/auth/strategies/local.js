@@ -8,12 +8,11 @@ module.exports = () => {
         usernameField: 'email',
         passwordField: 'password',
     }, (email, password, cb) => {
-        User.findOne({email: email})
+        User.findByEmail(email)
         .then(user => {
             if (!user) {
                 return cb(null, false);
             }
-
             user.comparePassword(password, (error, isMatch) => {
                 if (error) {
                     return cb(error);
@@ -28,4 +27,4 @@ module.exports = () => {
             return cb(error);
         });
     }));
-};
+}; 

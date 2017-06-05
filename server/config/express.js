@@ -7,8 +7,10 @@ const httpStatus = require('http-status');
 const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const simpleLogger = require('morgan');
+const cookieParser = require('cookie-parser');
 const APIError = require('../helpers/APIError');
 const userRoutes = require('../modules/users/routes');
+const authRoutes = require('../modules/auth/routes');
 const auth = require('../modules/auth/auth');
 const tokens = require('../helpers/Tokens');
 
@@ -21,17 +23,17 @@ module.exports = () => {
     }
 
     tokens.setDefaults({
-        issuer: 'localhost:8000',
-        audience: 'localhost:8000',
+        issuer: appConfig.TOKEN_DEFAULT_ISSUER,
+        audience: appConfig.TOKEN_DEFAULT_AUDIENCE,
     });
     tokens.register({
         access: {
-            secret: 'test',
+            secret: appConfig.ACCESS_SECRET,
             expiration: 3600,
         },
 
         refresh: {
-            secret: 'test',
+            secret: appConfig.REFRESH_SECRET,
             expiration: 30 * 24 * 3600,
         },
     });
@@ -39,6 +41,7 @@ module.exports = () => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(compress());
+    app.use(cookieParser());
     app.use(methodOverride());
     app.use(helmet());
     app.use((req, res, next) => {
@@ -70,6 +73,7 @@ module.exports = () => {
         });
     }); */
 
+    app.use('/auth', authRoutes);
     app.use('/users', userRoutes);
 
     return app;
