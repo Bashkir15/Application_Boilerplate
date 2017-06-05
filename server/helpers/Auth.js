@@ -63,16 +63,31 @@ module.exports = (options) => {
             }));
         }
 
-        return jwt.verify(token, secret, (err) => {
-            if (err && required) {
-                return next(new APIError({
-                    status: 403,
-                }));
-            }
+       /* return async () => {
+            const arity = secret.length;
 
-            req.userId = decoded.userId;
-            return next();
-        });
+            try {
+                if (arity == 4) {
+                    secret(req, decoded.header, decoded.userId);
+                } else {
+                    secret(req, decoded.userId);
+                }
+            } catch (err) {
+                throw new Error(err);
+            }
+        }
+        .then(() => {
+            jwt.verify(token, secret, (err) => {
+                if (err && required) {
+                    return next(new APIError({
+                        status: 403,
+                    }));
+                } 
+
+                req.userId = decoded.userId;
+                return next();
+            });
+        }); */
     };
 
     return obj;
