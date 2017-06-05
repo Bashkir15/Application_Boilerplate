@@ -12,81 +12,84 @@ const TYPES = new Map();
 
 /* eslint-disable no-param-reassign */
 
-const service = module.exports = {
-    generate(payload, config) {
-        config = service.mergeConfig(config);
-        const secret = service.extractSecret(config);
-        return jwt.sign(payload, secret, config);
+module.exports = {
+    setDeafults(config) {
+        Object.assign(defaults, config);
     },
 
-    validate(token, config) {
-        config = service.mergeConfig(config);
-        const secret = service.extractSecret(config);
+    register(type, config) {
+        if (!type) {
+            return;
+        }
+
+        if (typeof type === 'object') {
+            return Object.keys(type).forEach(key => {
+                this.register(key, type[key]);
+            });
+        }
+
+        const mergedConfig = Object.assign({}, defaults, config);
+        if (!isValidConfig(mergedConfig)) {
+            // throw err
+        }
+
+        TYPES.set(type, mergedConfig);
+    },
+
+    generate(type, claims) {
+        if (!TYPES.has(type)) {
+            // throw err
+        }
+
+        const config = TYPES.get(type);
+        return jwt.sign(claims, config,secret, {
+            audience: config.audience,
+            issuer: config.issuer,
+            expiresIn: config.expiration,
+        });
+    },
+
+    validate(type, token) {
+        if (!TYPES.has(type)) {
+            return Promise.reject(
+                // throw err
+            );
+        }
+
+        const config = TYPES.get(type);
 
         return new Promise((resolve, reject) => {
-            jwt.verify(token, secret, config, (error, payload) => {
+            jwt.verify(token, config.secret, {
+                audience: config.audience,
+                issuer: config.issuer,
+            }, (error, payload) => {
                 if (!error) {
                     return resolve(payload);
                 }
                 if (error.name === 'TokenExpiredError') {
-                    // throw err,
+                    // throw err
                 } else {
-                    // throw new error
+                    // throw err
                 }
                 return reject(error);
             });
         });
     },
 
-    registerType(type, config) {
-        if (!type) {
-            // err
-        }
-
-        if (typeof type === 'object') {
-            return Object.keys(type).forEach((key) => {
-                service.register(key, type[key]);
-            });
-        }
-
-        config = service.mergeConfig(config);
-        if (!isValidConfig(config)) {
-            // err
-        }
-
-        return TYPES.set(type, config);
-    },
-
-    generateType(type, claims) {
-        const config = service.getType(type);
-        return service.generate(claims, config);
-    },
-
-    validateType(type, token) {
-        const config = service.getType(type);
-        return service.validate(token, config);
-    },
-
-    getType(type) {
+    getExpiration(type) {
         if (!TYPES.has(type)) {
             // throw err
         }
 
-        return TYPES.get(type);
+        let config = TYPES.get(type);
+        return config.expiration || 0;
     },
 
-    setDefaults(config) {
-        Object.assign(defaults, config);
-    },
-
-    mergeConfig(config) {
-        return Object.assign({}, defaults, config);
-    },
-
-    extractSecret(config) {
-        const secret = config.secret;
-        delete config.secret;
-        return secret;
+    getId(payload) {
+        if (!payload || !payload.id) {
+            // throw err
+        }
+        return payload.id;
     },
 };
 /* eslint-enable no-param-reassign */
