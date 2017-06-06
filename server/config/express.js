@@ -23,17 +23,17 @@ module.exports = () => {
     }
 
     tokens.setDefaults({
-        issuer: appConfig.TOKEN_DEFAULT_ISSUER,
-        audience: appConfig.TOKEN_DEFAULT_AUDIENCE,
+        issuer: 'localhost:8000',
+        audience: 'localhost:8000',
     });
     tokens.register({
         access: {
-            secret: appConfig.ACCESS_SECRET,
+            secret: 'test',
             expiration: 3600,
         },
 
         refresh: {
-            secret: appConfig.REFRESH_SECRET,
+            secret: 'test',
             expiration: 30 * 24 * 3600,
         },
     });

@@ -13,6 +13,7 @@ module.exports = {
 
     token(req, res, next) {
         const { grantType, remember, secureStatus } = req.body;
+
         function authCheck(error, user) {
             if (error) {
                 // new error
@@ -36,8 +37,8 @@ module.exports = {
             if (remember) {
                 const refreshToken = tokens.generate('refresh', user.getClaims());
                 res.cookie('refreshToken', refreshToken, {
-                    maxAge: appConfig.REFRESH_TOKEN_COOKIE_MAX_AGE * 1000,
-                    secure: appConfig.REFRESH_TOKEN_COOKIE_SECURE,
+                    maxAge: global.config.REFRESH_TOKEN_COOKIE_MAX_AGE * 1000,
+                    secure: global.config.REFRESH_TOKEN_COOKIE_SECURE,
                     httpOnly: true
                 });
             }

@@ -41,6 +41,7 @@ server.listen(appConfig.SERVER_PORT, () => {
     console.log(`The application is running at: ${appConfig.SERVER_HOST}${appConfig.SERVER_PORT}`);
 });
 
-
 global.config = appConfig;
+
 module.exports = server;
+
