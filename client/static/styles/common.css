@@ -8,12 +8,12 @@
 html {
     box-sizing: inherit;
     width: 100vw;
+    font-size: 100%;
 }
 body {
     font-family: 'Lato';
     font-weight: 300;
-    font-size: 14px;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 :root {
     --light-text: #f3f2f1;
@@ -28,16 +28,16 @@ h1, h2, h3, h4, h5 {
     font-weight: normal;
 }
 h1 {
-    font-size: 3rem;
+    font-size: 3.4rem;
 }
 h2 {
-    font-size: 2.4rem;
+    font-size: 2.8rem;
 }
 h3 {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
 }
 h4 {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
 }
 a {
     font-size: 1.15rem;
@@ -49,6 +49,10 @@ button {
     border: none;
     transition: color 0.4s ease-out, background-color 0.4s ease-out;
 }
+a, button, label {
+    font-family: 'Source Sans Pro';
+    font-weight: normal;
+}
 input {
     border: none;
 }
@@ -58,4 +62,16 @@ ul {
 li {
     padding: 10px 0;
     transition: color 0.4s ease-out, background-color 0.4s ease-out;
+}
+
+@media screen and (min-width: 700px) {
+    html {
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    html {
+        font-size: 20px;
+    }
 }
