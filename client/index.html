@@ -3,17 +3,222 @@
     <head>
         <title>Start your new Javascript Application Today</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <!-- <link rel='"icon' -->
         <meta name="description" content="A modern Javascript Application boilerplate. Comes packaged with serveral mix-and-match features required for almost any application">
+        <meta name="keywords" content="Javascript Node Express Mongoose Mongo Boilerplate Webpack ES7">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <meta property="og:locale" content="en_US">
         <meta property="og:type" content="website">
         <meta property="og:title" content="A modern Javascript Application Boilerplate. Comes packaged with several mix-and-match features required for almost any application">
         <meta name="twitter:card" content="summary">
         <meta name="twitter:description" content="A modern Javascript Application Boilerplate. Comes packaged with several mix-and-match features required for almost any application">
         <meta name="titter:title" content="Start your new Javascript Application Today">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400i|Source+Sans+Pro:400,600" rel="stylesheet">
+        <link href="./icons/style.css" rel="stylesheet">
+        <link href="./styles/common.css" rel="stylesheet">
+
+        <style>
+            .nav {
+                display: flex;
+                align-items: stretch;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 70px;
+                width: 100vw;
+                padding: 0 1.2rem;
+                background: transparent;
+            }
+            .nav-left {
+                display: flex;
+                flex: 1 0 0;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            .nav-right {
+                display: flex;
+                flex: 1 0 0;
+                align-items: center;
+                justify-content: flex-end;
+            }
+            .nav-item {
+                display: none;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                height: 70px;
+                padding: 0 1rem;
+            }
+            .nav-item a {
+                color: var(--light-text);
+            }
+            .nav-item input {
+                height: 32px;
+                width: 260px;
+                background: var(--light-text);
+                border-radius: 20px;
+            }
+            .nav-item label {
+                position: absolute;
+                top: 24px;
+                left: 25px;
+                font-size: 1.02rem;
+                color: #5990ae
+            }
+            .mobile-trigger {
+                position: relative;
+                height: 45px;
+                width: 35px;
+                overflow: hidden;
+            }
+            .mobile-trigger span {
+                display: block;
+                position: absolute;
+                left: 0;
+                height: 3px;
+                width: 90%;
+                background: var(--light-text);
+                border-radius: 4px;
+                transition: transform 0.4s ease-out;
+            }
+            .mobile-trigger span:nth-of-type(1) {
+                top: 28px;
+            }
+            .mobile-trigger span:nth-of-type(2) {
+                top: 35px;
+            }
+            .mobile-trigger span:nth-of-type(3) {
+                top: 42px;
+            }
+            .mobile-trigger:hover span:nth-of-type(1) {
+                transform: translateX(-4px);
+            }
+            .mobile-trigger:hover span:nth-of-type(2) {
+                transform: translateX(-10px);
+            }
+            .mobile-trigger:hover span:nth-of-type(3) {
+                transform: translateX(-2px);
+            }
+            .landing-header {
+                height: 650px;
+                padding-top: 10rem;
+                padding-left: 1.4rem;
+                background: linear-gradient(135deg, var(--grad-purple) 0%, var(--grad-purple) 35%, var(--grad-blue) 70%, var(--grad-blue-light) 100%);
+            }
+            .landing-header h1 {
+                color: #f3f2f1;
+                text-align: left;
+                text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+            }
+            .landing-header p {
+                margin: 2rem 0 3rem;
+                line-height: 1.8;
+                font-size: 1.2rem;
+                color: var(--grey-text);
+            }
+            .header-download {
+                display: flex;
+                align-items: center;
+                padding: 1rem 3rem 1.1rem;
+                color: var(--light-text);
+                border: 2px solid var(--theme-1-button);
+                border-radius: 36px;
+                font-family: 'Source Sans Pro';
+                font-weight: 600;
+                font-size: 1.1rem;
+                letter-spacing: 0.1rem;
+                transition: background-color 0.4s ease-out;
+            }
+            .header-download span:nth-of-type(1) {
+                display: inline-block;
+                margin-right: 1rem;
+            }
+            .header-download span:nth-of-type(2) {
+                color: var(--grey-text);
+                font-size: 1.4rem;
+                transition: color 0.4s ease-out;
+            }
+            .header-download:hover {
+                background-color: var(--theme-1-button);
+            }
+            .header-download:hover span:nth-of-type(2) {
+                color: var(--light-text);
+            }
+        </style>
     </head>
 
     <body>
+        <nav class="nav">
+            <ul class="nav-left">
+
+                <li class="nav-item nav-search">
+                    <input type="text" class="form-input" id="search">
+                    <label for="search">Search</label>
+                </li>
+            </ul>
+
+            <ul class="nav-right">
+                <li class="nav-item">
+                    <a href="/getting-started">
+                        Getting Started
+                    </a>
+                </li>
+
+                <li class="nav-item nav-dropdown">
+                    <a href="/examples">
+                        Examples
+                    </a>
+                    <ul class="nav-nested-list">
+                        <li>
+                            <a>React</a>
+                        </li>
+
+                        <li>
+                            <a>Vue</a>
+                        </li>
+
+                        <li>
+                            <a>Angular</a>
+                        </li>
+
+                        <li>
+                            <a>Vanilla JS</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/about">
+                        About
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="/docs">
+                        Docs
+                    </a>
+                </li>
+            </ul>
+            <button type="button" class="mobile-trigger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <main>
+            <header class="landing-header">
+                <h1>Starting Projects is Hard</h1>
+                <p>What's are you waiting for?
+                <br> 
+                Start building your app <span>today</span></p>
+                <button type="button" class="header-download">
+                    <span>Download</span>
+                    <span class="icon-download-cloud"></span>
+                </button>
+            </header>
+        </main>
     </body>
 </html>

@@ -1,10 +1,17 @@
 const mongoose = require('mongoose');
 const tokens = require('../../helpers/Tokens');
+//const mailer = require('../../helpers/Mailer');
 const User = require('./model').User;
 
 module.exports = {
     create(req, res, next) {
         User.create(req.body)
+            .then(user => {
+                verifyEmailAddressEmail(user)
+                    .then(email => mailer.send(email))
+                    .catch('errorhandler')
+                return user;
+            })
             .then(user => {
                 const json = user.toJSON();
                 json.accessToken = tokens.generate('access', user.getClaims())
@@ -55,4 +62,32 @@ module.exports = {
             next();
         }).catch(next);
     },
+
+    sendVerificationEmail(req, res, next) {
+        const user = req.user;
+        verifyEmailAddressEmail(user)
+            .then(email => meailer.send(email))
+            .then(() => res.end())
+            .cache(next);
+    },
+
+    verifyEmail(req, res, next) {
+        const token = req.body.token;
+
+        tokens.validate('verifyEmail', token)
+            .then(tokens.getId)
+            .then(id => User.findOneAndUpdate({
+                _id: id
+            }, {
+                isEmailVerified: true,
+            }))
+            .then(() => {
+                res.json({
+                    isValid: true,
+                })
+            })
+            .catch(next);
+    },
+
+    
 };

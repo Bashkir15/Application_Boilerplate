@@ -8,6 +8,7 @@ const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const simpleLogger = require('morgan');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const APIError = require('../helpers/APIError');
 const userRoutes = require('../modules/users/routes');
 const authRoutes = require('../modules/auth/routes');
@@ -72,7 +73,10 @@ module.exports = () => {
             stack: env === 'development' ? err.stack : {},
         });
     }); */
-
+    app.use(express.static(path.join(__dirname, '../../client/static')));
+    app.get('/', (req, res, next) => {
+        res.sendFile(path.join(__dirname, '../../client/index.html'));
+    });
     app.use('/auth', authRoutes);
     app.use('/users', userRoutes);
 

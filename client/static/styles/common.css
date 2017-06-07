@@ -1,0 +1,61 @@
+*,
+*:after,
+*:before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    box-sizing: inherit;
+    width: 100vw;
+}
+body {
+    font-family: 'Lato';
+    font-weight: 300;
+    font-size: 14px;
+    overflow: hidden;
+}
+:root {
+    --light-text: #f3f2f1;
+    --grey-text: #ababab;
+    --grad-purple: #310050;
+    --grad-blue: #1148aa;
+    --grad-blue-light: #00d9d8;
+    --theme-1-button: #00b4ff;
+}
+h1, h2, h3, h4, h5 {
+    font-family: 'Source Sans Pro';
+    font-weight: normal;
+}
+h1 {
+    font-size: 3rem;
+}
+h2 {
+    font-size: 2.4rem;
+}
+h3 {
+    font-size: 1.8rem;
+}
+h4 {
+    font-size: 1.2rem;
+}
+a {
+    font-size: 1.15rem;
+    text-decoration: none;
+    transition: color 0.4s ease-out;
+}
+button {
+    background: none;
+    border: none;
+    transition: color 0.4s ease-out, background-color 0.4s ease-out;
+}
+input {
+    border: none;
+}
+ul {
+    list-style-type: none;
+}
+li {
+    padding: 10px 0;
+    transition: color 0.4s ease-out, background-color 0.4s ease-out;
+}

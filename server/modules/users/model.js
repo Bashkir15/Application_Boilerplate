@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema({
         default: ['authorized'],
     },
 
+    isEmailVerified: {
+        type: Boolean,
+        default: false,
+    },
+
     usedTokens: [String],
 
     loggedIn: {

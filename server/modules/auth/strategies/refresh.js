@@ -15,7 +15,7 @@ module.exports = () => {
             .then(id => User.findById(id))
             .then(user => {
                 if (!user) {
-                    // err
+                    console.log('NO USER');
                 }
                 return cb(null, user);
             })
