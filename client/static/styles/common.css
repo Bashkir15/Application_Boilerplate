@@ -51,7 +51,7 @@ button {
 }
 a, button, label {
     font-family: 'Source Sans Pro';
-    font-weight: normal;
+    font-weight: 300;
 }
 input {
     border: none;
@@ -66,12 +66,12 @@ li {
 
 @media screen and (min-width: 700px) {
     html {
-        font-size: 18px;
+        font-size: 17px;
     }
 }
 
 @media screen and (min-width: 1600px) {
     html {
-        font-size: 20px;
+        font-size: 18.2px;
     }
 }

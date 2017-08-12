@@ -1,77 +1,107 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const errors = require('../errors/index');
+const roles = require('../../config/constants');
+const combineScopes = require('../auth/helpers/combineScopes');
+const { ValidationError } = errors;
 
 const userSchema = new mongoose.Schema({
     created: {
-        type: Date,
-        default: Date.now,
+        type    : Date,
+        default : Date.now,
     },
 
     lastUpdated: {
-        type: Date,
-        default: Date.now,
+        type    : Date,
+        default : Date.now,
     },
 
-    name: {
+    firstName: {
         type: String,
         required: true,
+        trim: true,
+    },
+
+    lastName: {
+        type: String,
+        required: true,
+        trim: true,
     },
 
     username: {
-        type: String,
-        unique: true,
-        required: true,
+        type     : String,
+        unique   : true,
+        required : true,
+        trim     : true,
     },
 
     email: {
-        type: String,
-        unique: true,
-        required: true,
+        type     : String,
+        unique   : true,
+        required : true,
+        trim     : true,
     },
 
     password: {
-        type: String,
-        required: true,
+        type     : String,
+        required : true,
+        trim     : true,
     },
 
     roles: {
-        type: Array,
-        default: ['authorized'],
+        type: [{
+            type: String,
+            enum: Object.values(roles),
+        }],
+        default: [roles.USER],
     },
-
     isEmailVerified: {
-        type: Boolean,
-        default: false,
+        type    : Boolean,
+        default : false,
     },
-
-    usedTokens: [String],
-
+    lastActive: Date,
     loggedIn: {
-        type: Boolean,
-        default: false,
+        type    : Boolean,
+        default : false,
     },
 
     loginAttempts: {
-        type: Number,
-        default: 0,
-        required: true,
+        type     : Number,
+        default  : 0,
+        required : true,
     },
 
     lockUntil: {
-        type: Number,
+        type : Number,
     },
 
     limitReacted: {
-        type: Number,
-        required: true,
-        default: 0,
+        type     : Number,
+        required : true,
+        default  : 0,
     },
 });
+
+userSchema.index({ username: 1 }, { unique: true });
+
+userSchema.statics.parseData = function(data) {
+    return data;
+};
 
 userSchema.pre('save', async function(next) {
     const user = this;
     if (!user.isModified('password')) {
         return next();
+    }
+
+    if (!this.password) {
+        return next(new ValidationError({
+            fields: {
+                password: {
+                    type: 'required',
+                },
+            },
+        }));
     }
 
     try {
@@ -85,29 +115,84 @@ userSchema.pre('save', async function(next) {
     }
 });
 
-userSchema.methods = {
-    comparePassword: function(candidatePassword, cb) {
-        const user = this;
-        bcrypt.compare(candidatePassword, user.password, (error, isMatch) => {
-            if (error) {
-                return cb(error);
-            }
-            cb(null, isMatch);
-        });
-    },
 
-    hasRole: function(role) {
+userSchema.virtual('emailWithName').get(function() {
+    const { email, firstName, lastName } = this;
+    if (!email) {
+        return '';
+    }
+    if (firstName || lastName) {
+        return `${`${firstName} ${lastName}`.trim()} <${email}>`;
+    }
+});
+userSchema.virtual('isLocked').get(function() {
+    return !!(this.lockUntil && this.lockUntil > Date.now());
+});
+
+
+userSchema.methods = {
+    comparePassword(candidatePassword) {
+        return bcrypt.compare(candidatePassword, this.password);
+    },
+    hasRole(role) {
         return this.roles.includes(role);
     },
-
-    getClaims: function() {
+    getClaims() {
         return {
-            id: this._id.toString(),
+            user: this._id.toString(),
             roles: this.roles,
+            scope: combineScopes(this.roles).join(' '),
         };
     },
+    incorrectLoginAttempts(cb) {
+        if (this.lockUntil && this.lockUntil < Date.now()) {
+            return this.update({
+                $set: { 
+                    loginAttempts: 1,
+                    limitReached: 0
+                },
+                $unset: { lockUntil: 1}
+            }, cb);
+        }
 
-    toJSON: function() {
+        const updates = {
+            $inc: {
+                loginAttempts: 1
+            }
+        };
+
+        if (this.loginAttempts + 1 > 5 && !this.isLocked) {
+            updates.$set = {
+                lockUntil: Date.now() + 2 * 60 * 60 * 1000,
+                limitReached: 1
+            }
+        }
+
+        if (this.loginAttempts + 1 > 5 && this.limitReached == 1 && !this.isLocked) {
+            updates.$set = {
+                lockUntil: Date.now() + 4 * 60 * 60 * 1000,
+                limitReached: 2
+            }
+        }
+
+        if (this.loginAttempts + 1 > 3 && this.limitReached == 2 && !this.isLocked) {
+            updates.$set = {
+                lockUntil: Date.now() + 8 * 60 * 60 * 1000,
+                limitReached: 3
+            }
+        }
+
+        if (this.loginAttempts + 1 > 3 && this.limitReached == 3 && !this.isLocked) {
+            updates.$set = {
+                lockUntil: Date.now() + 10000 * 60 * 60 * 1000,
+                limitReached: 4,
+                secureLock: true
+            }
+        }
+
+        return this.update(updates, cb);
+    },
+    toJSON() {
         const obj = this.toObject();
         obj.password = '';
         obj.usedTokens = [];
@@ -115,26 +200,7 @@ userSchema.methods = {
     },
 };
 
-function populate(query) {
-    return query;
-
-}
-userSchema.statics = {
-    findById: function(id) {
-        const query = this.findById(id);
-        return populate(query);
-    },
-
-    findByEmail: function(email) {
-        const query = this.findOne({
-            email: email,
-        });
-        return populate(query);
-    },
-};
-
 const User = mongoose.model('User', userSchema);
-
 module.exports = {
     User,
 };

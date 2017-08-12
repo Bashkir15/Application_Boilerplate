@@ -14,7 +14,7 @@
         <meta name="twitter:card" content="summary">
         <meta name="twitter:description" content="A modern Javascript Application Boilerplate. Comes packaged with several mix-and-match features required for almost any application">
         <meta name="titter:title" content="Start your new Javascript Application Today">
-        <link href="https://fonts.googleapis.com/css?family=Lato:300,400i,700|Source+Sans+Pro:400,600" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400i|Source+Sans+Pro:300,400" rel="stylesheet">
         <link href="./icons/style.css" rel="stylesheet">
         <link href="./styles/common.css" rel="stylesheet">
 
@@ -110,7 +110,7 @@
             }
             .landing-header p {
                 line-height: 1.8;
-                color: var(--grey-text);
+                color: #ababab;
             }
             .landing-header p:nth-of-type(1) {
                 margin-top: 5.2rem;
@@ -127,13 +127,14 @@
                 position: relative;
                 display: flex;
                 align-items: center;
-                padding: 1rem 3rem 1.1rem;
+                height: 55px;
+                width: 220px;
                 color: var(--light-text);
                 border: 2px solid var(--theme-1-button);
                 border-radius: 36px;
                 font-family: 'Lato';
-                font-weight: 700;
-                font-size: 1.1rem;
+                font-weight: 400;
+                font-size: 0.9rem;
                 letter-spacing: 0.1rem;
                 z-index: 5;
                 transition: background-color 0.4s ease-out;
@@ -143,7 +144,7 @@
                 margin-right: 1rem;
             }
             .header-download span:nth-of-type(2) {
-                color: var(--grey-text);
+                color: #cacaca;
                 font-size: 1.4rem;
                 transition: color 0.4s ease-out;
             }
@@ -152,6 +153,9 @@
             }
             .header-download:hover span:nth-of-type(2) {
                 color: var(--light-text);
+            }
+            .landing-header-right {
+                display: none;
             }
 
             @media screen and (min-width: 650px) {
@@ -270,6 +274,7 @@
                     text-align: left;
                 }
                 .landing-header-right {
+                    display: inline-block;
                     position: relative;
                     width: 55%;
                     height: 500px;
@@ -281,7 +286,6 @@
                 }
                 .header-download {
                     margin-top: 1.3rem;
-                    padding: 1rem 2.4rem 1rem;
                 }
             }
 
@@ -324,9 +328,8 @@
                     padding-right: 5rem;
                 }
                 .header-download {
-                    padding: 0.7rem 1.7rem;
                     margin-top: 0.5rem;
-                    font-size: 0.8rem;
+                    font-size: 0.7rem;
                 }
                 .header-download span:nth-of-type(2) {
                     font-size: 1rem;

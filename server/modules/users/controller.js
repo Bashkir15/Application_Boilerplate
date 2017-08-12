@@ -1,93 +1,154 @@
-const mongoose = require('mongoose');
-const tokens = require('../../helpers/Tokens');
-//const mailer = require('../../helpers/Mailer');
+'use strict';
+
 const User = require('./model').User;
+const { UsedToken } = require('../auth/tokenModel');
 
 module.exports = {
+    list(req, res) {
+        const users = req.users.map(user => user.toJSON());
+        res.json(users);
+    },
+    get(req, res) {
+        const user = req.user.toJSON();
+        const status = req.isCreate ? 201 : 200;
+        res.status(status).json(user);
+    },
     create(req, res, next) {
-        User.create(req.body)
-            .then(user => {
-                verifyEmailAddressEmail(user)
-                    .then(email => mailer.send(email))
-                    .catch('errorhandler')
-                return user;
-            })
-            .then(user => {
-                const json = user.toJSON();
-                json.accessToken = tokens.generate('access', user.getClaims())
-                return json;
-            })
-            .then(user => {
-                res.status(201).json(user);
-            })
+        const data = User.parseData(req.data);
+        req.isCreate = true;
+
+        new User(data)
+            .then(user => req.user = user)
+            .then(next)
             .catch(next);
     },
+    update(req, res, next) {
+        const { user } = req;
+        const data = User.parseData(req.data);
+        user.setProperties(data);
 
-    exists(req, res, next) {
-        User.find(req.body).limit(1)
-            .then(users => (users.length > 0))
-            .then(exists => {
-                res.json({
-                    exists,
-                });
-            })
-            .catch(next);
-    },
-
-    findById(req, res, next, id) {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return next(new Error());
+        const emailChanged = user.isModified('email');
+        if (emailChanged) {
+            user.isEmailVerified = false;
         }
+        user.save()
+            .then((user) => {
+                if (emailChanged) {
+                    /*
+                    mailer
+                        .create('user/verify-email-address', req, user)
+                        .then(email => email.send())
+                        .catch(error => errors.handler(error, req)); */
 
-        User.findById(id)
-            .then(user => {
-                if (!user) {
-                    // throw error
                 }
                 req.user = user;
-                next();
+            })
+            .then(next)
+            .catch(next);
+    },
+    delete(req, res, next) {
+        const { user } = req;
+        user.remove()
+            .then(() => res.status(204).end())
+            .catch(next);
+    },
+    updatePassword(req, res, next) {
+        const { user, claims, body } = req;
+        user.password = body.password;
+        user.save()
+            .then((user) => {
+                /*
+                mailer
+                    .create('user/credentials-changed', req, user)
+                    .then(email => email.send())
+                    .catch(error => errors.handler(error, req)); */
+                UsedToken.markAsUsed(claims)
+                    .catch(error => console.log(error));
+                res.end();
             })
             .catch(next);
     },
-
+    verifyEmail(req, res, next) {
+        const { user } = req;
+        user.isEmailVerified = true;
+        user.save()
+            .then(() => res.end())
+            .catch(next);
+    },
+    exists(req, res, next) {
+        const filter = {};
+        const allowed = ['username', 'email'];
+        for (const key in req.query) {
+            if (req.query.hasOwnProperty(key) && allowed.includes(key)) {
+                filter[key] = req.query[key];
+            }
+        }
+        if (Object.keys(filter).length === 0) {
+            return res.json({ exists: false });
+        }
+        User.find(filter)
+            .limit(1)
+            .then(users => users.length > 0)
+            .then(exists => res.json({ exists }))
+            .catch(next);
+    },
+    setClaimedId(req, res, next) {
+        req.userId = req.claims.user;
+        next();
+    },
+    findByQuery(req, res, next) {
+        User.find({})
+            .then(users => req.users = users)
+            .then(next)
+            .catch(next);
+    },
     findByEmail(req, res, next) {
-        if (!req.body.email) {
+        const { email } = req.body;
+        if (!email) {
             return next();
         }
 
-        User.findOne({
-            email: req.body.email,
-        }).then(user => {
-            req.user = user;
-            next();
-        }).catch(next);
-    },
-
-    sendVerificationEmail(req, res, next) {
-        const user = req.user;
-        verifyEmailAddressEmail(user)
-            .then(email => meailer.send(email))
-            .then(() => res.end())
-            .cache(next);
-    },
-
-    verifyEmail(req, res, next) {
-        const token = req.body.token;
-
-        tokens.validate('verifyEmail', token)
-            .then(tokens.getId)
-            .then(id => User.findOneAndUpdate({
-                _id: id
-            }, {
-                isEmailVerified: true,
-            }))
-            .then(() => {
-                res.json({
-                    isValid: true,
-                })
+        User.find({ email })
+            .select('username firstName lastName')
+            .then((users) => {
+                if (users.length === 0) {
+                    console.log('no users found');
+                }
+                req.users = users;
             })
+            .then(next)
             .catch(next);
     },
+    ensureUsernameNotInUse(checkId) {
+        return function (req, res, next) {
+            const { username } = req.body;
+            const filter = { username };
+            if (checkId) {
+                filter._id = {
+                    $ne: req.userId,
+                };
+            }
 
-    
+            User.findOne(filter)
+                .then((user) => {
+                    if (user) {
+                        console.log('exists');
+                    }
+                })
+                .then(next)
+                .catch(next)
+        }
+    },
+    updateLastActive(req, res, next) {
+        const { user } = req;
+        user.lastActive = Date.now();
+        user.save().catch(error => console.log(error));
+        next();
+    },
+    collectData(req, res, next) {
+        const isCreate = !req.userId;
+        req.data = req.body;
+        next();
+    },
 };
+

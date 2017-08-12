@@ -1,24 +1,14 @@
 const passport = require('passport');
 const mongoose = require('mongoose');
-const RefreshStrategy = require('../../helpers/Refresh');
-const tokens = require('../../helpers/Tokens');
-const User = require('../../users/model').User;
+const RefreshStrategy = require('../helpers/customRefresh');
+const validateToken = require('../helpers/validateToken');
+const findByClaims = require('../helpers/findByClaims');
 
 module.exports = () => {
     passport.use(new RefreshStrategy((refreshToken, cb) => {
-        if (!refreshToken) {
-            return cb(null, false);
-        }
-
-        tokens.validate('refresh', refreshToken)
-            .then(tokens.getId)
-            .then(id => User.findById(id))
-            .then(user => {
-                if (!user) {
-                    console.log('NO USER');
-                }
-                return cb(null, user);
-            })
+        validateToken(refreshToken)
+            .then(findByClaims)
+            .then(([user, claims]) => cb(null, user, claims))
             .catch(cb);
     }));
 };

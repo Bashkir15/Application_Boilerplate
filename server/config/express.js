@@ -1,84 +1,57 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
-const compress = require('compression');
-const methodOverride = require('method-override');
-const httpStatus = require('http-status');
-// const expressWinston = require('express-winston');
-const expressValidation = require('express-validation');
-const helmet = require('helmet');
-const simpleLogger = require('morgan');
+const passport = require('passport');
+const morgan = require('morgan');
+const compression = require('compression');
 const cookieParser = require('cookie-parser');
-const path = require('path');
-const APIError = require('../helpers/APIError');
-const userRoutes = require('../modules/users/routes');
-const authRoutes = require('../modules/auth/routes');
-const auth = require('../modules/auth/auth');
-const tokens = require('../helpers/Tokens');
+const errors = require('../modules/errors/index');
+const authenticate = require('../middleware/authenticate');
+const ensureValidOrigin = require('../middleware/ensureValidOrigin');
+const BadRequestError = errors.BadRequestError;
 
-module.exports = () => {
+require('../init/errorHandling');
+require('../init/token');
+require('../init/auth');
+
+module.exports = (config) => {
     const app = express();
-    const env = process.env.NODE_ENV || 'development';
-
-    if (env === 'development') {
-        app.use(simpleLogger('dev'));
-    }
-
-    tokens.setDefaults({
-        issuer: 'localhost:8000',
-        audience: 'localhost:8000',
-    });
-    tokens.register({
-        access: {
-            secret: 'test',
-            expiration: 3600,
+    app.use(cors({
+        origin: APP_ORIGINS,
+        credentials: true,
+    }));
+    app.use(compression({
+        level: 3,
+        filter(req, res) {
+            return (/json|text|javascript|css/).test(res.getHeader('Content-Type'));
         },
-
-        refresh: {
-            secret: 'test',
-            expiration: 30 * 24 * 3600,
-        },
-    });
-
+    }));
+    app.use(morgan('dev'));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(compress());
     app.use(cookieParser());
-    app.use(methodOverride());
-    app.use(helmet());
-    app.use((req, res, next) => {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Authorization');
-        next();
-    });
 
-    auth(app);
-
-    app.use((err, req, res, next) => {
-        if (err instanceof expressValidation.ValidationError) {
-            const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');
-            const error = new APIError(unifiedErrorMessage, err.status, true);
-            return next(error);
-        } else if (!(err instanceof APIError)) {
-            const apiError = new APIError(err.message, err.status, err.isPublic);
-            return next(apiError);
-        }
-
-        return next(err);
-    });
-
-   /* app.use((err, req, res) => {
-        res.status(err.status).json({
-            message: err.isPublic ? err.message : httpStatus[err.status],
-            stack: env === 'development' ? err.stack : {},
+    if (SERVER_LATENCY) {
+        let latency = require('express-simulate-latency')({
+            min: SERVER_LATENCY_MIN,
+            max: SERVER_LATENCY_MAX,
         });
-    }); */
+        app.use(latency);
+    }
+
+    app.use(ensureValidOrigin);
+    app.use(authenticate);
+    app.use(passport.initialize());
+    // Yucky, This will need to move to a n actual server js file that runs the docs and demos page.
     app.use(express.static(path.join(__dirname, '../../client/static')));
+    app.use(express.static(path.join(__dirname, '../../react/build')));
     app.get('/', (req, res, next) => {
         res.sendFile(path.join(__dirname, '../../client/index.html'));
     });
-    app.use('/auth', authRoutes);
-    app.use('/users', userRoutes);
+    app.get('/react/*', (req, res, next) => {
+        res.sendFile(path.join(__dirname, '../../react/index.html'));
+    });
+    errors.middleware().forEach(handler => app.use(handler));
 
     return app;
 };
